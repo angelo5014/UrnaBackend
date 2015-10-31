@@ -4,6 +4,7 @@ using System.Data;
 using System.Data.SqlClient;
 using System.Transactions;
 using DbExtensions;
+using System.Collections.Generic;
 
 namespace Aula4Ado
 {
@@ -61,6 +62,37 @@ namespace Aula4Ado
             }
 
             return cargoEncontrado;
+        }
+
+        public IList<Cargo> BuscarPorNome(string nome)
+        {
+            IList<Cargo> cargosEncontrados = new List<Cargo>();
+
+            string connectionString = ConfigurationManager.ConnectionStrings["URNA"].ConnectionString;
+            using (IDbConnection connection = new SqlConnection(connectionString))
+            {
+                IDbCommand comando = connection.CreateCommand();
+                comando.CommandText =
+                    "SELECT idCargo,nome,situacao FROM Cargo WHERE idCargo = @paramNome";
+                comando.AddParameter("paramNome", nome);
+                connection.Open();
+                IDataReader reader = comando.ExecuteReader();
+
+                while (reader.Read())
+                {
+                    int idDb = Convert.ToInt32(reader["IdCargo"]);
+                    string nomeCargo = reader["Nome"].ToString();
+                    char situacao = Convert.ToChar(reader["Situacao"]);
+
+                    cargosEncontrados.Add(new Cargo(idDb, nomeCargo)
+                    {
+                        Situacao = situacao
+                    });
+                }
+                connection.Close();
+            }
+
+            return cargosEncontrados;
         }
 
         public int DeletarPorId(int id)
