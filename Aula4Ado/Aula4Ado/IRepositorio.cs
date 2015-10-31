@@ -3,7 +3,8 @@
     public interface IRepositorio<T>
     {
         T BuscarPorId(int id);
-        void Atualizar(T t);
+        int DeletarPorId(int id);
+        int Atualizar(T t);
         void Inserir(T t);
     }
 }
