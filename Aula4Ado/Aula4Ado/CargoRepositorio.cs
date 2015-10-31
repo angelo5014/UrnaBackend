@@ -9,9 +9,10 @@ namespace Aula4Ado
 {
     public class CargoRepositorio : IRepositorio<Cargo>
     {
-        public void Atualizar(Cargo t)
+        public int Atualizar(Cargo t)
         {
             string connectionString = ConfigurationManager.ConnectionStrings["URNA"].ConnectionString;
+            int linhasAfetadas = 0;
 
             using (TransactionScope transacao = new TransactionScope())
             using (IDbConnection connection = new SqlConnection(connectionString))
@@ -23,11 +24,12 @@ namespace Aula4Ado
                 comando.AddParameter("paramSituacao", t.Situacao);
                 comando.AddParameter("paramIdCargo", t.IdCargo);
                 connection.Open();
-                comando.ExecuteNonQuery();
+                linhasAfetadas = comando.ExecuteNonQuery();
 
                 transacao.Complete();
                 connection.Close();
             }
+            return linhasAfetadas;
         }
 
         public Cargo BuscarPorId(int id)
@@ -59,6 +61,27 @@ namespace Aula4Ado
             }
 
             return cargoEncontrado;
+        }
+
+        public int DeletarPorId(int id)
+        {
+            string connectionString = ConfigurationManager.ConnectionStrings["URNA"].ConnectionString;
+            int linhasAfetadas = 0;
+
+            using (TransactionScope transacao = new TransactionScope())
+            using (IDbConnection connection = new SqlConnection(connectionString))
+            {
+                IDbCommand comando = connection.CreateCommand();
+                comando.CommandText =
+                    "DELETE FROM Cargo where idCargo = @paramIdCargo";
+                comando.AddParameter("paramIdCargo", id);
+                connection.Open();
+                linhasAfetadas = comando.ExecuteNonQuery();
+
+                transacao.Complete();
+                connection.Close();
+            }
+            return linhasAfetadas;
         }
 
         public void Inserir(Cargo t)
