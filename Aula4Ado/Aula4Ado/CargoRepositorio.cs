@@ -2,6 +2,7 @@
 using System.Configuration;
 using System.Data;
 using System.Data.SqlClient;
+using System.Transactions;
 using DbExtensions;
 
 namespace Aula4Ado
@@ -11,6 +12,8 @@ namespace Aula4Ado
         public void Atualizar(Cargo t)
         {
             string connectionString = ConfigurationManager.ConnectionStrings["URNA"].ConnectionString;
+
+            using (TransactionScope transacao = new TransactionScope())
             using (IDbConnection connection = new SqlConnection(connectionString))
             {
                 IDbCommand comando = connection.CreateCommand();
@@ -22,6 +25,7 @@ namespace Aula4Ado
                 connection.Open();
                 comando.ExecuteNonQuery();
 
+                transacao.Complete();
                 connection.Close();
             }
         }
@@ -55,6 +59,26 @@ namespace Aula4Ado
             }
 
             return cargoEncontrado;
+        }
+
+        public void Inserir(Cargo t)
+        {
+            string connectionString = ConfigurationManager.ConnectionStrings["URNA"].ConnectionString;
+
+            using (TransactionScope transacao = new TransactionScope())
+            using (IDbConnection connection = new SqlConnection(connectionString))
+            {
+                IDbCommand comando = connection.CreateCommand();
+                comando.CommandText =
+                    "INSERT into Cargo(nome, situacao) values(@paramNome,@paramSituacao)";
+                comando.AddParameter("paramNome", t.Nome);
+                comando.AddParameter("paramSituacao", t.Situacao);
+                connection.Open();
+                comando.ExecuteNonQuery();
+
+                transacao.Complete();
+                connection.Close();
+            }
         }
     }
 }

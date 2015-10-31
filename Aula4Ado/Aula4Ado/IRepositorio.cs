@@ -4,7 +4,6 @@
     {
         T BuscarPorId(int id);
         void Atualizar(T t);
+        void Inserir(T t);
     }
-
-
 }
