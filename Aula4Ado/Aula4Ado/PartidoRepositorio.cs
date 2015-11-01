@@ -117,7 +117,7 @@ namespace Aula4Ado
                 {
                     IDbCommand comando = connection.CreateCommand();
                     comando.CommandText =
-                        "INSERT into Partido(nome, sloga, sigla) values(@paramNome,@paramSlogan,@paramSigla)";
+                        "INSERT into Partido(nome, slogan, sigla) values(@paramNome,@paramSlogan,@paramSigla)";
                     comando.AddParameter("paramNome", t.Nome);
                     comando.AddParameter("paramSlogan", t.Slogan);
                     comando.AddParameter("paramSigla", t.Sigla);
