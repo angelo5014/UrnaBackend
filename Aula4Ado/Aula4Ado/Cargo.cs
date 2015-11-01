@@ -5,7 +5,7 @@ namespace Aula4Ado
     public class Cargo
     {
         public int IdCargo { get; private set; }
-        public string Nome { get; private set; }
+        public string Nome { get; set; }
         public char Situacao { get; set; }
 
         public Cargo(int idCargo, string nome)
