@@ -13,7 +13,7 @@ namespace Aula4Ado
         public int Atualizar(Partido t)
         {
             Partido validar = BuscarPorSiglaENome(t);
-            if(validar != null && validar.IdPartido != t.IdPartido)
+            if (validar != null && validar.IdPartido != t.IdPartido)
             {
                 return 0;
             }
@@ -42,7 +42,7 @@ namespace Aula4Ado
 
         public Partido BuscarPorId(int id)
         {
-            Partido partidoEncontrado = null;
+            Partido partidoEncontrado;
 
             string connectionString = ConfigurationManager.ConnectionStrings["URNA"].ConnectionString;
             using (IDbConnection connection = new SqlConnection(connectionString))
@@ -53,19 +53,8 @@ namespace Aula4Ado
                 comando.AddParameter("paramIdPartido", id);
                 connection.Open();
                 IDataReader reader = comando.ExecuteReader();
+                partidoEncontrado = reader.Read() ? ParsePartido(reader) : null;
 
-                if (reader.Read())
-                {
-                    int idDb = Convert.ToInt32(reader["IdPartido"]);
-                    string nome = reader["Nome"].ToString();
-                    string slogan = reader["Slogan"].ToString();
-                    string sigla = reader["Sigla"].ToString();
-
-                    partidoEncontrado = new Partido(nome, slogan, sigla)
-                    {
-                        IdPartido = idDb
-                    };
-                }
                 connection.Close();
             }
 
@@ -74,7 +63,7 @@ namespace Aula4Ado
 
         public Partido BuscarPorSiglaENome(Partido partido)
         {
-            Partido partidoEncontrado = null;
+            Partido partidoEncontrado;
             string nomePartido = partido.Nome;
             string siglaPartido = partido.Sigla;
 
@@ -88,19 +77,8 @@ namespace Aula4Ado
                 comando.AddParameter("paramSigla", siglaPartido);
                 connection.Open();
                 IDataReader reader = comando.ExecuteReader();
+                partidoEncontrado = reader.Read() ? ParsePartido(reader) : null;
 
-                if (reader.Read())
-                {
-                    int idDb = Convert.ToInt32(reader["IdPartido"]);
-                    string nome = reader["Nome"].ToString();
-                    string slogan = reader["Slogan"].ToString();
-                    string sigla = reader["Sigla"].ToString();
-
-                    partidoEncontrado = new Partido(nome, slogan, sigla)
-                    {
-                        IdPartido = idDb
-                    };
-                }
                 connection.Close();
             }
 
@@ -150,6 +128,19 @@ namespace Aula4Ado
                     connection.Close();
                 }
             }
+        }
+
+        private Partido Parse(IDataReader reader)
+        {
+            int idDb = Convert.ToInt32(reader["IdPartido"]);
+            string nome = reader["Nome"].ToString();
+            string slogan = reader["Slogan"].ToString();
+            string sigla = reader["Sigla"].ToString();
+
+            return new Partido(nome, slogan, sigla)
+            {
+                IdPartido = idDb
+            };
         }
     }
 }

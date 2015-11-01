@@ -39,7 +39,7 @@ namespace Aula4Ado
 
         public Cargo BuscarPorId(int id)
         {
-            Cargo cargoEncontrado = null;
+            Cargo cargoEncontrado;
 
             string connectionString = ConfigurationManager.ConnectionStrings["URNA"].ConnectionString;
             using (IDbConnection connection = new SqlConnection(connectionString))
@@ -50,18 +50,8 @@ namespace Aula4Ado
                 comando.AddParameter("paramIdCargo", id);
                 connection.Open();
                 IDataReader reader = comando.ExecuteReader();
+                cargoEncontrado = reader.Read() ? Parse(reader) : null;
 
-                if (reader.Read())
-                {
-                    int idDb = Convert.ToInt32(reader["IdCargo"]);
-                    string nome = reader["Nome"].ToString();
-                    char situacao = Convert.ToChar(reader["Situacao"]);
-
-                    cargoEncontrado = new Cargo(idDb, nome)
-                    {
-                        Situacao = situacao
-                    };
-                }
                 connection.Close();
             }
 
@@ -70,7 +60,7 @@ namespace Aula4Ado
 
         public Cargo BuscarPorNome(string nome)
         {
-            Cargo cargoEncontrado = null;
+            Cargo cargoEncontrado;
 
             string connectionString = ConfigurationManager.ConnectionStrings["URNA"].ConnectionString;
             using (IDbConnection connection = new SqlConnection(connectionString))
@@ -81,18 +71,8 @@ namespace Aula4Ado
                 comando.AddParameter("paramNome", nome);
                 connection.Open();
                 IDataReader reader = comando.ExecuteReader();
+                cargoEncontrado = reader.Read() ? Parse(reader) : null;
 
-                if (reader.Read())
-                {
-                    int idDb = Convert.ToInt32(reader["IdCargo"]);
-                    string nomeCargo = reader["Nome"].ToString();
-                    char situacao = Convert.ToChar(reader["Situacao"]);
-
-                    cargoEncontrado = new Cargo(idDb, nomeCargo)
-                    {
-                        Situacao = situacao
-                    };
-                }
                 connection.Close();
             }
 
@@ -142,6 +122,18 @@ namespace Aula4Ado
                     connection.Close();
                 }
             }
+        }
+
+        public Cargo Parse(IDataReader reader)
+        {
+            int idDb = Convert.ToInt32(reader["IdCargo"]);
+            string nomeCargo = reader["Nome"].ToString();
+            char situacao = Convert.ToChar(reader["Situacao"]);
+
+            return new Cargo(idDb, nomeCargo)
+            {
+                Situacao = situacao
+            };
         }
     }
 }
