@@ -99,7 +99,7 @@ namespace Aula4Ado
             return cargoEncontrado;
         }
 
-        public int DeletarPorId(int id)
+        public int AtualizarSituacao(Cargo t)
         {
             string connectionString = ConfigurationManager.ConnectionStrings["URNA"].ConnectionString;
             int linhasAfetadas = 0;
@@ -109,8 +109,9 @@ namespace Aula4Ado
             {
                 IDbCommand comando = connection.CreateCommand();
                 comando.CommandText =
-                    "DELETE FROM Cargo where idCargo = @paramIdCargo";
-                comando.AddParameter("paramIdCargo", id);
+                    "UPDATE Cargo set situacao=@paramSituacao where idCargo = @paramIdCargo";
+                comando.AddParameter("paramSituacao", t.Situacao);
+                comando.AddParameter("paramIdCargo", t.IdCargo);
                 connection.Open();
                 linhasAfetadas = comando.ExecuteNonQuery();
 
