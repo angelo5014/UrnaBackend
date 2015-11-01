@@ -12,6 +12,10 @@ namespace Aula4Ado
     {
         public int Atualizar(Cargo t)
         {
+            if (BuscarPorNome(t.Nome) != null)
+            {
+                return 0;
+            }
             string connectionString = ConfigurationManager.ConnectionStrings["URNA"].ConnectionString;
             int linhasAfetadas = 0;
 
@@ -64,35 +68,35 @@ namespace Aula4Ado
             return cargoEncontrado;
         }
 
-        public IList<Cargo> BuscarPorNome(string nome)
+        public Cargo BuscarPorNome(string nome)
         {
-            IList<Cargo> cargosEncontrados = new List<Cargo>();
+            Cargo cargoEncontrado = null;
 
             string connectionString = ConfigurationManager.ConnectionStrings["URNA"].ConnectionString;
             using (IDbConnection connection = new SqlConnection(connectionString))
             {
                 IDbCommand comando = connection.CreateCommand();
                 comando.CommandText =
-                    "SELECT idCargo,nome,situacao FROM Cargo WHERE idCargo = @paramNome";
+                    "SELECT idCargo,nome,situacao FROM Cargo WHERE nome = @paramNome";
                 comando.AddParameter("paramNome", nome);
                 connection.Open();
                 IDataReader reader = comando.ExecuteReader();
 
-                while (reader.Read())
+                if (reader.Read())
                 {
                     int idDb = Convert.ToInt32(reader["IdCargo"]);
                     string nomeCargo = reader["Nome"].ToString();
                     char situacao = Convert.ToChar(reader["Situacao"]);
 
-                    cargosEncontrados.Add(new Cargo(idDb, nomeCargo)
+                    cargoEncontrado = new Cargo(idDb, nomeCargo)
                     {
                         Situacao = situacao
-                    });
+                    };
                 }
                 connection.Close();
             }
 
-            return cargosEncontrados;
+            return cargoEncontrado;
         }
 
         public int DeletarPorId(int id)
@@ -120,19 +124,22 @@ namespace Aula4Ado
         {
             string connectionString = ConfigurationManager.ConnectionStrings["URNA"].ConnectionString;
 
-            using (TransactionScope transacao = new TransactionScope())
-            using (IDbConnection connection = new SqlConnection(connectionString))
+            if (BuscarPorNome(t.Nome) == null)
             {
-                IDbCommand comando = connection.CreateCommand();
-                comando.CommandText =
-                    "INSERT into Cargo(nome, situacao) values(@paramNome,@paramSituacao)";
-                comando.AddParameter("paramNome", t.Nome);
-                comando.AddParameter("paramSituacao", t.Situacao);
-                connection.Open();
-                comando.ExecuteNonQuery();
+                using (TransactionScope transacao = new TransactionScope())
+                using (IDbConnection connection = new SqlConnection(connectionString))
+                {
+                    IDbCommand comando = connection.CreateCommand();
+                    comando.CommandText =
+                        "INSERT into Cargo(nome, situacao) values(@paramNome,@paramSituacao)";
+                    comando.AddParameter("paramNome", t.Nome);
+                    comando.AddParameter("paramSituacao", t.Situacao);
+                    connection.Open();
+                    comando.ExecuteNonQuery();
 
-                transacao.Complete();
-                connection.Close();
+                    transacao.Complete();
+                    connection.Close();
+                }
             }
         }
     }
