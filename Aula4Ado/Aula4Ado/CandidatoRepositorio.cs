@@ -81,6 +81,60 @@ namespace Aula4Ado
             }
         }
 
+        public int DeletarPorID(int id)
+        {
+            if(id == 1 || id == 2 || id == 3 || id == 4)
+            {
+                return 0;
+            }
+
+            string connectionString = ConfigurationManager.ConnectionStrings["URNA"].ConnectionString;
+            int linhasAfetadas = 0;
+
+            using (TransactionScope transacao = new TransactionScope())
+            using (IDbConnection connection = new SqlConnection(connectionString))
+            {
+                IDbCommand comando = connection.CreateCommand();
+                comando.CommandText =
+                    "DELETE FROM Candidato WHERE idCandidato = @paramIdCandidato";
+                comando.AddParameter("paramIdCandidato", id);
+
+                connection.Open();
+                linhasAfetadas = comando.ExecuteNonQuery();
+
+                transacao.Complete();
+                connection.Close();
+            }
+            return linhasAfetadas;
+        }
+
+        public int DeletarPorNomeCompleto(string nomeCompleto)
+        {
+            if (nomeCompleto == "Voto Nulo" || nomeCompleto == "Voto em Branco")
+            {
+                return 0;
+            }
+
+            string connectionString = ConfigurationManager.ConnectionStrings["URNA"].ConnectionString;
+            int linhasAfetadas = 0;
+
+            using (TransactionScope transacao = new TransactionScope())
+            using (IDbConnection connection = new SqlConnection(connectionString))
+            {
+                IDbCommand comando = connection.CreateCommand();
+                comando.CommandText =
+                    "DELETE FROM Candidato WHERE NomeCompleto = @paramNomeCompleto";
+                comando.AddParameter("paramNomeCompleto", nomeCompleto);
+
+                connection.Open();
+                linhasAfetadas = comando.ExecuteNonQuery();
+
+                transacao.Complete();
+                connection.Close();
+            }
+            return linhasAfetadas;
+        }
+
         public Candidato BuscarPorId(int id)
         {
             Candidato candidatoEncontrado;
