@@ -12,6 +12,12 @@ namespace Aula4Ado
     {
         public int Atualizar(Partido t)
         {
+            Partido validar = BuscarPorSiglaENome(t);
+            if(validar != null && validar.IdPartido != t.IdPartido)
+            {
+                return 0;
+            }
+
             string connectionString = ConfigurationManager.ConnectionStrings["URNA"].ConnectionString;
             int linhasAfetadas = 0;
 
@@ -66,36 +72,39 @@ namespace Aula4Ado
             return partidoEncontrado;
         }
 
-        public IList<Partido> BuscarPorSigla(string siglaPartido)
+        public Partido BuscarPorSiglaENome(Partido partido)
         {
-            IList<Partido> partidosEncontrados = new List<Partido>();
+            Partido partidoEncontrado = null;
+            string nomePartido = partido.Nome;
+            string siglaPartido = partido.Sigla;
 
             string connectionString = ConfigurationManager.ConnectionStrings["URNA"].ConnectionString;
             using (IDbConnection connection = new SqlConnection(connectionString))
             {
                 IDbCommand comando = connection.CreateCommand();
                 comando.CommandText =
-                    "SELECT idPartido,nome,slogan,sigla FROM Partido WHERE sigla = @paramSigla";
+                    "SELECT idPartido,nome,slogan,sigla FROM Partido WHERE nome=@paramNome and sigla=@paramSigla";
+                comando.AddParameter("paramNome", nomePartido);
                 comando.AddParameter("paramSigla", siglaPartido);
                 connection.Open();
                 IDataReader reader = comando.ExecuteReader();
 
-                while (reader.Read())
+                if (reader.Read())
                 {
                     int idDb = Convert.ToInt32(reader["IdPartido"]);
-                    string nomePartido = reader["Nome"].ToString();
+                    string nome = reader["Nome"].ToString();
                     string slogan = reader["Slogan"].ToString();
                     string sigla = reader["Sigla"].ToString();
 
-                    partidosEncontrados.Add(new Partido(nomePartido, slogan, sigla)
+                    partidoEncontrado = new Partido(nome, slogan, sigla)
                     {
                         IdPartido = idDb
-                    });
+                    };
                 }
                 connection.Close();
             }
 
-            return partidosEncontrados;
+            return partidoEncontrado;
         }
 
         public int DeletarPorId(int id)
@@ -121,22 +130,25 @@ namespace Aula4Ado
 
         public void Inserir(Partido t)
         {
-            string connectionString = ConfigurationManager.ConnectionStrings["URNA"].ConnectionString;
-
-            using (TransactionScope transacao = new TransactionScope())
-            using (IDbConnection connection = new SqlConnection(connectionString))
+            if (BuscarPorSiglaENome(t) == null)
             {
-                IDbCommand comando = connection.CreateCommand();
-                comando.CommandText =
-                    "INSERT into Partido(nome, sloga, sigla) values(@paramNome,@paramSlogan,@paramSigla)";
-                comando.AddParameter("paramNome", t.Nome);
-                comando.AddParameter("paramSlogan", t.Slogan);
-                comando.AddParameter("paramSigla", t.Sigla);
-                connection.Open();
-                comando.ExecuteNonQuery();
+                string connectionString = ConfigurationManager.ConnectionStrings["URNA"].ConnectionString;
 
-                transacao.Complete();
-                connection.Close();
+                using (TransactionScope transacao = new TransactionScope())
+                using (IDbConnection connection = new SqlConnection(connectionString))
+                {
+                    IDbCommand comando = connection.CreateCommand();
+                    comando.CommandText =
+                        "INSERT into Partido(nome, sloga, sigla) values(@paramNome,@paramSlogan,@paramSigla)";
+                    comando.AddParameter("paramNome", t.Nome);
+                    comando.AddParameter("paramSlogan", t.Slogan);
+                    comando.AddParameter("paramSigla", t.Sigla);
+                    connection.Open();
+                    comando.ExecuteNonQuery();
+
+                    transacao.Complete();
+                    connection.Close();
+                }
             }
         }
     }
