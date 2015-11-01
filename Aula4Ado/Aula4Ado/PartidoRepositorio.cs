@@ -53,7 +53,7 @@ namespace Aula4Ado
                 comando.AddParameter("paramIdPartido", id);
                 connection.Open();
                 IDataReader reader = comando.ExecuteReader();
-                partidoEncontrado = reader.Read() ? ParsePartido(reader) : null;
+                partidoEncontrado = reader.Read() ? Parse(reader) : null;
 
                 connection.Close();
             }
@@ -77,7 +77,7 @@ namespace Aula4Ado
                 comando.AddParameter("paramSigla", siglaPartido);
                 connection.Open();
                 IDataReader reader = comando.ExecuteReader();
-                partidoEncontrado = reader.Read() ? ParsePartido(reader) : null;
+                partidoEncontrado = reader.Read() ? Parse(reader) : null;
 
                 connection.Close();
             }
@@ -130,7 +130,7 @@ namespace Aula4Ado
             }
         }
 
-        private Partido Parse(IDataReader reader)
+        public Partido Parse(IDataReader reader)
         {
             int idDb = Convert.ToInt32(reader["IdPartido"]);
             string nome = reader["Nome"].ToString();
