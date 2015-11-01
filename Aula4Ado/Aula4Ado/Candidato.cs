@@ -19,7 +19,7 @@ namespace Aula4Ado
         public short Exibe { get; set; }
         public string Foto { get; set; }
 
-        public Candidato(int idCandidato, string nomeCompleto, string nomePopular, DateTime dataNascimento, string registroTRE, 
+        public Candidato(int idCandidato, string nomeCompleto, string nomePopular, DateTime dataNascimento, string registroTRE,
             int idPartido, int numero, int idCargo, short exibe)
         {
             IdCandidato = idCandidato;
@@ -35,7 +35,7 @@ namespace Aula4Ado
         }
 
         public Candidato(int idCandidato, string nomeCompleto, string nomePopular, DateTime dataNascimento, string registroTRE,
-            int idPartido, int numero, int idCargo, short exibe, string foto) : this(idCandidato, nomeCompleto, nomePopular, 
+            int idPartido, int numero, int idCargo, short exibe, string foto) : this(idCandidato, nomeCompleto, nomePopular,
             dataNascimento, registroTRE, idPartido, numero, idCargo, exibe)
         {
             Foto = foto;
@@ -43,7 +43,7 @@ namespace Aula4Ado
 
         public override string ToString()
         {
-            return string.Format("{1} {2}, {3} {4}, {5} {6},{0}{7} {8:dd/MM/yyyy}, {9} {10}, {11} {12},{0}{13} {14}, {15} {16}, {17} {18}", "\r\n", 
+            return string.Format("{1} {2}, {3} {4}, {5} {6},{0}{7} {8:dd/MM/yyyy}, {9} {10}, {11} {12},{0}{13} {14}, {15} {16}, {17} {18}", "\r\n",
                 "Id do candidato:", IdCandidato, "Nome completo:", NomeCompleto, "Nome popular:", NomePopular,
                 "Data de nascimento:", DataDeNascimento, "Registro TRE:", RegistroTRE, "Id do partido:", IdPartido,
                 "Numero:", Numero, "Id do cargo:", IdCargo, "Exibe:", Exibe);
