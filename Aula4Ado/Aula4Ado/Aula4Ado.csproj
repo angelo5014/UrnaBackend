@@ -45,6 +45,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Candidato.cs" />
+    <Compile Include="CandidatoRepositorio.cs" />
     <Compile Include="Cargo.cs" />
     <Compile Include="CargoRepositorio.cs" />
     <Compile Include="IDbCommandExtensions.cs" />
