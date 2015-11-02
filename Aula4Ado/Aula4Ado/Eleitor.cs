@@ -5,15 +5,15 @@ namespace Aula4Ado
     public class Eleitor
     {
         public int IdEleitor { get; internal set; }
-        public string Nome { get; private set; }
+        public string Nome { get; set; }
         public string TituloEleitoral { get; private set; }
-        internal string RG { get; private set; }
-        internal string CPF { get; private set; }
+        public string RG { get; private set; }
+        public string CPF { get; private set; }
         public DateTime DataNascimento { get; private set; }
         public string ZonaEleitoral { get; private set; }
         public string Secao { get; private set; }
         public char Situacao { get; internal set; }
-        public char Votou { get; internal set; }
+        public char Votou { get; set; }
 
         public Eleitor(string nome, string tituloEleitoral, string rg, string cpf, DateTime dataNascimento, string zonaEleitoral, string secao, char situacao, char votou)
         {

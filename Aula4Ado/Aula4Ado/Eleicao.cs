@@ -8,42 +8,41 @@ namespace Aula4Ado
 {
     public class Eleicao
     {
-        public Eleicao(int idDoCandidato)
+        public static bool EleicoesIniciadas { get; set; } = false;
+
+        CandidatoRepositorio candidatoRepositorio = new CandidatoRepositorio();
+        VotoRepositorio votoRepositorio = new VotoRepositorio();
+        CargoRepositorio cargoRepositorio = new CargoRepositorio();
+        PartidoRepositorio partidoRepositorio = new PartidoRepositorio();
+        EleicaoRepositorio eleicaoRepositorio = new EleicaoRepositorio();
+        EleitorRepositorio eleitorRepositorio = new EleitorRepositorio();
+        EstatisticaRepositorio estatisticaRepositorio = new EstatisticaRepositorio();
+
+        public Eleicao()
         {
-            BuscarPorId(idDoCandidato);
         }
 
-        public static bool IniciarEleicoes(int parametro)
+        public bool Votar(string cpf, Voto voto)
         {
-            bool resultado;
-            if (parametro == 1)
+            Eleitor eleitor = eleitorRepositorio.BuscarPorCpf(cpf);
+            if (eleitor != null && eleitor.Votou == 'N' && eleitor.Situacao == 'A')
             {
-                resultado = true;
+                votoRepositorio.Inserir(voto);
+                eleitor.Votou = 'S';
+                eleitorRepositorio.Atualizar(eleitor);
+                return true;
             }
-            else
-            {
-                resultado = false;
-            }
-
-            return resultado;
-
-            
+            return false;
         }
 
-        public static bool FinalizarEleicoes(int parametro)
+        public void IniciarEleicoes()
         {
-            bool resultado;
+            EleicoesIniciadas = true;
+        }
 
-            if (parametro == 1)
-            {
-                resultado = true;
-            }
-            else
-            {
-                resultado = false;
-            }
-
-            return resultado;
+        public void FinalizarEleicoes()
+        {
+            EleicoesIniciadas = false;
         }
     }
 }

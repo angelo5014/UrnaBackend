@@ -35,14 +35,9 @@ namespace Aula4Ado
             return votoEncontrado;
         }
 
-        public void Inserir(Voto t)
+        public int Inserir(Voto voto)
         {
-            throw new NotImplementedException();
-        }
-
-        public void Inserir(Voto voto, string cpf)
-        {
-            if (Validar(voto) && ValidarEleitor(cpf))
+            if (Validar(voto))
             {
                 string connectionString = ConfigurationManager.ConnectionStrings["URNA"].ConnectionString;
 
@@ -60,7 +55,9 @@ namespace Aula4Ado
                     transacao.Complete();
                     connection.Close();
                 }
+                return 1;
             }
+            return 0;
         }
 
         public Voto Parse(IDataReader reader)
@@ -77,11 +74,6 @@ namespace Aula4Ado
         public bool Validar(Voto t)
         {
             return t != null && t.IdCandidato > 0 && t.IdVoto > 0;
-        }
-
-        public bool ValidarEleitor(string cpf)
-        {
-            return new EleitorRepositorio().PodeVotarPorCpf(cpf);
         }
     }
 }

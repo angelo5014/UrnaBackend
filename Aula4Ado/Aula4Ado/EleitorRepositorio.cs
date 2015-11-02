@@ -26,7 +26,7 @@ namespace Aula4Ado
                 IDbCommand comando = connection.CreateCommand();
                 comando.CommandText =
                     "UPDATE Eleitor set nome=@paramNome, TituloEleitoral=@paramTituloEleitoral, RG=@paramRG, CPF=@paramCPF, DataNascimento=@paramDataNascimento, " +
-                        "ZonaEleitoral=@paramZonaEleitoral, Secao=@paramSecao, Situacao=@paramSituacao, Votou=@paramVotou) " +                     
+                        "ZonaEleitoral=@paramZonaEleitoral, Secao=@paramSecao, Situacao=@paramSituacao, Votou=@paramVotou " +                     
                     "WHERE idEleitor = @paramIdEleitor";
                 comando.AddParameter("paramNome", t.Nome);
                 comando.AddParameter("paramTituloEleitoral", t.TituloEleitoral);
@@ -34,9 +34,9 @@ namespace Aula4Ado
                 comando.AddParameter("paramCPF", t.CPF);
                 comando.AddParameter("paramDataNascimento", t.DataNascimento);
                 comando.AddParameter("paramZonaEleitoral", t.ZonaEleitoral);
-                comando.AddParameter(",@paramSecao", t.Secao);
-                comando.AddParameter(",@paramSituacao", t.Situacao);
-                comando.AddParameter(",@paramVotou", t.Votou);
+                comando.AddParameter("paramSecao", t.Secao);
+                comando.AddParameter("paramSituacao", t.Situacao);
+                comando.AddParameter("paramVotou", t.Votou);
                 comando.AddParameter("paramIdEleitor", t.IdEleitor);
                 connection.Open();
                 linhasAfetadas = comando.ExecuteNonQuery();
@@ -78,8 +78,8 @@ namespace Aula4Ado
                 IDbCommand comando = connection.CreateCommand();
                 comando.CommandText =
                     "SELECT IDEleitor, Nome, TituloEleitoral, RG, CPF, DataNascimento, ZonaEleitoral, Secao, Situacao, Votou " +
-                    "FROM Eleitor WHERE idPartido = @paramIdPartido";
-                comando.AddParameter("paramIdPartido", id);
+                    "FROM Eleitor WHERE idEleitor = @paramIdEleitor";
+                comando.AddParameter("paramIdEleitor", id);
                 connection.Open();
                 IDataReader reader = comando.ExecuteReader();
                 eleitorEncontrado = reader.Read() ? Parse(reader) : null;
@@ -88,6 +88,27 @@ namespace Aula4Ado
             }
 
             return eleitorEncontrado;
+        }
+
+        public int DeletarPorId(int id)
+        {
+            string connectionString = ConfigurationManager.ConnectionStrings["URNA"].ConnectionString;
+            int linhasAfetadas = 0;
+
+            using (TransactionScope transacao = new TransactionScope())
+            using (IDbConnection connection = new SqlConnection(connectionString))
+            {
+                IDbCommand comando = connection.CreateCommand();
+                comando.CommandText =
+                    "DELETE FROM Eleitor where idEleitor = @paramIdEleitor";
+                comando.AddParameter("paramIdEleitor", id);
+                connection.Open();
+                linhasAfetadas = comando.ExecuteNonQuery();
+
+                transacao.Complete();
+                connection.Close();
+            }
+            return linhasAfetadas;
         }
 
         public int Inserir(Eleitor t)
@@ -110,9 +131,9 @@ namespace Aula4Ado
                     comando.AddParameter("paramCPF", t.CPF);
                     comando.AddParameter("paramDataNascimento", t.DataNascimento);
                     comando.AddParameter("paramZonaEleitoral", t.ZonaEleitoral);
-                    comando.AddParameter(",@paramSecao", t.Secao);
-                    comando.AddParameter(",@paramSituacao", t.Situacao);
-                    comando.AddParameter(",@paramVotou", t.Votou);
+                    comando.AddParameter("paramSecao", t.Secao);
+                    comando.AddParameter("paramSituacao", t.Situacao);
+                    comando.AddParameter("paramVotou", t.Votou);
                     connection.Open();
                     linhasAfetadas = comando.ExecuteNonQuery();
 
@@ -146,7 +167,7 @@ namespace Aula4Ado
         public bool PodeVotarPorCpf(string cpf)
         {
             Eleitor eleitor = BuscarPorCpf(cpf);
-            return eleitor != null && eleitor.Votou == 'N';
+            return eleitor != null && eleitor.Votou == 'N' && eleitor.Situacao == 'A';
         }
 
         public bool Validar(Eleitor t)

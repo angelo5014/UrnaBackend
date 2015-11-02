@@ -1,10 +1,13 @@
-﻿using System;
+﻿using DbExtensions;
+using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Transactions;
 
 namespace Aula4Ado
 {
@@ -22,28 +25,7 @@ namespace Aula4Ado
 
         public int Inserir(Eleicao t)
         {
-            int linhasAfetadas = 0;
-
-            string connectionString = ConfigurationManager.ConnectionStrings["URNA"].ConnectionString;
-
-            if ()
-            {
-                using (TransactionScope transacao = new TransactionScope())
-                using (IDbConnection connection = new SqlConnection(connectionString))
-                {
-                    IDbCommand comando = connection.CreateCommand();
-                    comando.CommandText =
-                        "INSERT into Cargo(nome, situacao) values(@paramNome,@paramSituacao)";
-                    comando.AddParameter("paramNome", t.Nome);
-                    comando.AddParameter("paramSituacao", t.Situacao);
-                    connection.Open();
-                    linhasAfetadas = comando.ExecuteNonQuery();
-
-                    transacao.Complete();
-                    connection.Close();
-                }
-            }
-            return linhasAfetadas;
+            return 0;
         }
 
         public Eleicao Parse(IDataReader reader)
