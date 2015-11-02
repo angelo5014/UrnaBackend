@@ -49,12 +49,20 @@
     <Compile Include="CandidatoRepositorio.cs" />
     <Compile Include="Cargo.cs" />
     <Compile Include="CargoRepositorio.cs" />
+    <Compile Include="Eleicao.cs" />
+    <Compile Include="EleicaoRepositorio.cs" />
+    <Compile Include="Eleitor.cs" />
+    <Compile Include="EleitorRepositorio.cs" />
+    <Compile Include="Estatistica.cs" />
+    <Compile Include="EstatisticaRepositorio.cs" />
     <Compile Include="IDbCommandExtensions.cs" />
     <Compile Include="IRepositorio.cs" />
     <Compile Include="Partido.cs" />
     <Compile Include="PartidoRepositorio.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Voto.cs" />
+    <Compile Include="VotoRepositorio.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

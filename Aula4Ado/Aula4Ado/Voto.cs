@@ -6,10 +6,12 @@ namespace Aula4Ado
     {
         public int IdVoto { get; set; }
         public int IdCandidato { get; set; }
+        CandidatoRepositorio candidatoRepositorio = new CandidatoRepositorio();
 
-        public Voto(int idCandidato)
+        public Voto(int numeroCandidato)
         {
-            IdCandidato = idCandidato;
+            Candidato candidatoASerVotado = candidatoRepositorio.BuscarPorNumero(numeroCandidato);
+            IdCandidato = candidatoASerVotado.IdCandidato;
         }
 
         public override string ToString()
