@@ -22,8 +22,9 @@ namespace Aula4Ado
         {
         }
 
-        public bool Votar(string cpf, Voto voto)
+        public bool Votar(string cpf, int numeroCandidato)
         {
+            Voto voto = new Voto(numeroCandidato);
             Eleitor eleitor = eleitorRepositorio.BuscarPorCpf(cpf);
             if (eleitor != null && eleitor.Votou == 'N' && eleitor.Situacao == 'A')
             {
