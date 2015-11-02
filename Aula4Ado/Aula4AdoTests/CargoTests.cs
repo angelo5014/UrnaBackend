@@ -3,10 +3,10 @@ using System;
 
 namespace Aula4Ado.Tests
 {
-    [TestClass()]
+    [TestClass]
     public class CargoTests
     {
-        [TestMethod()]
+        [TestMethod]
         public void CargoTest()
         {
             Cargo cargo = new Cargo("Cargo", 'A');
@@ -15,7 +15,7 @@ namespace Aula4Ado.Tests
             Assert.AreEqual('A', cargo.Situacao);
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void ToStringTest()
         {
             string esperado = string.Format("{4,-10}{1}{0}{5,-10}{2}{0}{6,-10}{3}",
@@ -27,7 +27,7 @@ namespace Aula4Ado.Tests
             Assert.AreEqual(esperado, atual.ToString());
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void EqualsTest()
         {
             Cargo cargo1 = new Cargo("96", 'I');

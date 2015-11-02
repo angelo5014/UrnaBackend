@@ -41,13 +41,25 @@ namespace Aula4AdoTests
             Assert.AreEqual("Juscelino Kubitschek de Oliveira", candidatoEncontrado.NomeCompleto);
             Assert.AreEqual("JK da Brasilia", candidatoEncontrado.NomePopular);
         }
+
         [TestMethod]
-        public void BuscaPorCargo()
+        public void CandidatoPrefeitoNaoEhInseridoPartidosIguais()
         {
             var repo = new CandidatoRepositorio();
-            var candidatoEncontrado = repo.BuscarPorNomePopular("JK da Brasilia");
-            Assert.AreEqual("Juscelino Kubitschek de Oliveira", candidatoEncontrado.NomeCompleto);
-            Assert.AreEqual(30300, candidatoEncontrado.Numero);
+            var candidato = new Candidato("Francisco Everardo Oliveira Silva", "Tiririca", new DateTime(2015-11-2), "666", 2, 666, 1, true);
+            int linhasAfetadasInsert = repo.Inserir(candidato);
+            Assert.AreEqual(0, linhasAfetadasInsert);      
+        }
+
+        [TestMethod]
+        public void CandidatoPresidenteEhInseridoEDeletado()
+        {
+            var repo = new CandidatoRepositorio();
+            var candidato = new Candidato("Francisco Everardo Oliveira Silva", "Tiririca", new DateTime(2015-11-2), "666", 2, 666, 2, true);
+            int linhasAfetadasInsert = repo.Inserir(candidato);
+            int linhasAfetadasDelete = repo.DeletarPorNomeCompleto(candidato.NomeCompleto);
+            Assert.AreEqual(1, linhasAfetadasInsert);
+            Assert.AreEqual(1, linhasAfetadasDelete);
         }
     }
 }

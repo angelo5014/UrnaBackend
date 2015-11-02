@@ -59,12 +59,11 @@ namespace Aula4Ado
                 using (IDbConnection connection = new SqlConnection(connectionString))
                 {
                     IDbCommand comando = connection.CreateCommand();
-                    comando.CommandText = "INSERT INTO Candidato (idCandidato, nomeCompleto, nomePopular, dataNascimento, registroTRE, idPartido, foto, numero, idCargo, exibe)"
-                        +"VALUES (@paramId, @paramNomeCompleto, @paramNomePop, @paramDataNasc, @paramRegistroTRE, @paramIDPartido, @paramFoto, @paramNumero, @paramIdCargo, @paramExibe)";
-                    comando.AddParameter("paramId", t.IdCandidato);
+                    comando.CommandText = "INSERT INTO Candidato (nomeCompleto, nomePopular, dataNascimento, registroTRE, idPartido, foto, numero, idCargo, exibe)"
+                        +"VALUES (@paramNomeCompleto, @paramNomePop, @paramDataNasc, @paramRegistroTRE, @paramIDPartido, @paramFoto, @paramNumero, @paramIdCargo, @paramExibe)";
                     comando.AddParameter("paramNomeCompleto", t.NomeCompleto);
                     comando.AddParameter("paramNomePop", t.NomePopular);
-                    comando.AddParameter("paramDataNasc", t.DataNascimento);
+                    comando.AddParameter("paramDataNasc", t.DataNascimento.ToString("yyyy-MM-dd"));
                     comando.AddParameter("paramRegistroTRE", t.RegistroTRE);
                     comando.AddParameter("paramIDPartido", t.IdPartido);
                     comando.AddParameter("paramFoto", t.Foto);
