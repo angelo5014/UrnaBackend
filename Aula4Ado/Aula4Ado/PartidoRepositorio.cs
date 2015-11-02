@@ -13,7 +13,7 @@ namespace Aula4Ado
         public int Atualizar(Partido t)
         {
             Partido validar = BuscarPorSiglaENome(t);
-            if (validar != null && validar.IdPartido != t.IdPartido)
+            if (Validar(validar) && validar.IdPartido != t.IdPartido)
             {
                 return 0;
             }
@@ -141,6 +141,11 @@ namespace Aula4Ado
             {
                 IdPartido = idDb
             };
+        }
+
+        public bool Validar(Partido t)
+        {
+            return t != null && !String.IsNullOrEmpty(t.Nome) && !String.IsNullOrEmpty(t.Slogan) && !String.IsNullOrEmpty(t.Sigla);
         }
     }
 }
