@@ -27,5 +27,20 @@ namespace Aula4Ado
             Situacao = situacao;
             Votou = votou;
         }
+
+        public override bool Equals(object obj)
+        {
+            Eleitor eleitor = (Eleitor)obj;
+            return IdEleitor == eleitor.IdEleitor && Nome == eleitor.Nome && TituloEleitoral == eleitor.TituloEleitoral &&
+                RG == eleitor.RG && CPF == eleitor.CPF && DataNascimento == eleitor.DataNascimento && ZonaEleitoral == eleitor.ZonaEleitoral &&
+                Secao == eleitor.Secao && Situacao == eleitor.Situacao && Votou == eleitor.Votou;
+        }
+
+        public override string ToString()
+        {
+            return string.Format("{1}{2,-6} {3}{4,-40} {5}{6,-13} {7}{8,-13} {9}{10,-13}{0}{11}{12:dd/MM/yyyy} {13}{14,-6} {15}{16,-6} {17}{18,-3} {19}{20,-3}{0}",
+                "\r\n", "ID: ", IdEleitor, "NOME: ", Nome, "TITULO:", TituloEleitoral, "RG :", RG, "CPF: ", CPF,
+                "NASCIMENTO: ", DataNascimento, "ZONA: ", ZonaEleitoral, "SEÇÃO: ", Secao, "SITUAÇÃO: ", Situacao, "VOTOU: ", Votou);
+        }
     }
 }
