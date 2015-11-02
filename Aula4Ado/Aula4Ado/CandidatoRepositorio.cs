@@ -13,8 +13,6 @@ namespace Aula4Ado
 {
     public class CandidatoRepositorio : IRepositorio<Candidato>
     {
-        Eleicao Eleicao = new Eleicao();
-
         public int Atualizar(Candidato t)
         {
             int linhasAfetadas = 0;
