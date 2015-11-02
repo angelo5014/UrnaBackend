@@ -2,7 +2,7 @@
 
 namespace Aula4Ado
 {
-    class Voto
+    public class Voto
     {
         public int IdVoto { get; set; }
         public int IdCandidato { get; set; }
