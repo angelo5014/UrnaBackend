@@ -49,8 +49,9 @@ namespace Aula4Ado
             return linhasAfetadas;
         }
 
-        public void Inserir(Candidato t)
+        public int Inserir(Candidato t)
         {
+            int linhasAfetadas = 0;
             if (ValidarCandidato(t))
             {
                 string connectionString = ConfigurationManager.ConnectionStrings["URNA"].ConnectionString;
@@ -72,13 +73,14 @@ namespace Aula4Ado
                     comando.AddParameter("paramExibe", t.Exibe ? 1 : 0);
 
                     connection.Open();
-                    comando.ExecuteNonQuery();
+                    linhasAfetadas = comando.ExecuteNonQuery();
 
                     transation.Complete();
                     connection.Close();
 
                 }
             }
+            return linhasAfetadas;
         }
 
         public int DeletarPorID(int id)
@@ -250,10 +252,10 @@ namespace Aula4Ado
             using (IDbConnection connection = new SqlConnection(connectionString))
             {
                 IDbCommand comando = connection.CreateCommand();
-                comando.CommandText = "SELECT idCandidato, idPartido, idCargo"
+                comando.CommandText = "SELECT idCandidato, NomeCompleto, NomePopular, DataNascimento, RegistroTRE, c.idPartido, Foto, Numero, c.idCargo, Exibe "
                     + "FROM Candidato c "
                     + "INNER JOIN Cargo ca ON c.IdCargo = ca.IdCargo "
-                    + "INNER JOIN Partido p ON p.IDpartido = c.IdPartido"
+                    + "INNER JOIN Partido p ON p.IDpartido = c.IdPartido "
                     + "WHERE ca.Nome = 'prefeito' and p.idPartido = @paramPartido";
 
                 comando.AddParameter("paramPartido", candidato.IdPartido);
@@ -269,11 +271,11 @@ namespace Aula4Ado
 
         public bool ValidarCandidato(Candidato t)
         {
-            bool nomeCompletoValido = String.IsNullOrWhiteSpace(t.NomeCompleto) ? true : false;
-            bool nomePopularValido = BuscarPorNomePopular(t.NomePopular) != null && String.IsNullOrWhiteSpace(t.NomePopular) ? true : false;
-            bool registroTREValido = BuscarPorRegistroTRE(t.RegistroTRE) != null ? true : false;
-            bool numeroValido = BuscarPorNumero(t.Numero) != null ? true : false;
-            bool cargoValido = verificarCargoPartido(t) != null ? true : false;
+            bool nomeCompletoValido = !String.IsNullOrWhiteSpace(t.NomeCompleto) ? true : false;
+            bool nomePopularValido = BuscarPorNomePopular(t.NomePopular) == null && !String.IsNullOrWhiteSpace(t.NomePopular) ? true : false;
+            bool registroTREValido = BuscarPorRegistroTRE(t.RegistroTRE) == null ? true : false;
+            bool numeroValido = BuscarPorNumero(t.Numero) == null ? true : false;
+            bool cargoValido = t.IdCargo == 1 ? (verificarCargoPartido(t) == null ? true : false) : true;
             return nomeCompletoValido && nomePopularValido && registroTREValido && numeroValido && cargoValido ? true : false;
         }
 

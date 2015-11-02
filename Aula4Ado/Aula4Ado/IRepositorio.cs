@@ -6,7 +6,7 @@ namespace Aula4Ado
     {
         T BuscarPorId(int id);
         int Atualizar(T t);
-        void Inserir(T t);
+        int Inserir(T t);
         T Parse(IDataReader reader);
     }
 }

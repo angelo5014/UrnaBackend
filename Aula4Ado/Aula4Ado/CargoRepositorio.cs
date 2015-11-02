@@ -100,8 +100,10 @@ namespace Aula4Ado
             return linhasAfetadas;
         }
 
-        public void Inserir(Cargo t)
+        public int Inserir(Cargo t)
         {
+            int linhasAfetadas = 0;
+
             string connectionString = ConfigurationManager.ConnectionStrings["URNA"].ConnectionString;
 
             if (BuscarPorNome(t.Nome) == null)
@@ -115,12 +117,13 @@ namespace Aula4Ado
                     comando.AddParameter("paramNome", t.Nome);
                     comando.AddParameter("paramSituacao", t.Situacao);
                     connection.Open();
-                    comando.ExecuteNonQuery();
+                    linhasAfetadas = comando.ExecuteNonQuery();
 
                     transacao.Complete();
                     connection.Close();
                 }
             }
+            return linhasAfetadas;
         }
 
         public Cargo Parse(IDataReader reader)
