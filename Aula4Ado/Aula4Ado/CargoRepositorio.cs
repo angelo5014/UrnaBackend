@@ -11,29 +11,37 @@ namespace Aula4Ado
     {
         public int Atualizar(Cargo t)
         {
-            if (BuscarPorNome(t.Nome) != null)
-            {
-                return 0;
-            }
-            string connectionString = ConfigurationManager.ConnectionStrings["URNA"].ConnectionString;
             int linhasAfetadas = 0;
 
-            using (TransactionScope transacao = new TransactionScope())
-            using (IDbConnection connection = new SqlConnection(connectionString))
+            if (!Eleicao.EleicoesIniciadas)
             {
-                IDbCommand comando = connection.CreateCommand();
-                comando.CommandText =
-                    "UPDATE Cargo set nome=@paramNome,situacao=@paramSituacao where idCargo = @paramIdCargo";
-                comando.AddParameter("paramNome", t.Nome);
-                comando.AddParameter("paramSituacao", t.Situacao);
-                comando.AddParameter("paramIdCargo", t.IdCargo);
-                connection.Open();
-                linhasAfetadas = comando.ExecuteNonQuery();
+                if (BuscarPorNome(t.Nome) != null)
+                {
+                    return 0;
+                }
+                string connectionString = ConfigurationManager.ConnectionStrings["URNA"].ConnectionString;
 
-                transacao.Complete();
-                connection.Close();
+                using (TransactionScope transacao = new TransactionScope())
+                using (IDbConnection connection = new SqlConnection(connectionString))
+                {
+                    IDbCommand comando = connection.CreateCommand();
+                    comando.CommandText =
+                        "UPDATE Cargo set nome=@paramNome,situacao=@paramSituacao where idCargo = @paramIdCargo";
+                    comando.AddParameter("paramNome", t.Nome);
+                    comando.AddParameter("paramSituacao", t.Situacao);
+                    comando.AddParameter("paramIdCargo", t.IdCargo);
+                    connection.Open();
+                    linhasAfetadas = comando.ExecuteNonQuery();
+
+                    transacao.Complete();
+                    connection.Close();
+                }
+                return linhasAfetadas;
             }
-            return linhasAfetadas;
+            else
+            {
+                return linhasAfetadas;
+            }
         }
 
         public Cargo BuscarPorId(int id)
@@ -80,50 +88,65 @@ namespace Aula4Ado
 
         public int AtualizarSituacao(Cargo t)
         {
-            string connectionString = ConfigurationManager.ConnectionStrings["URNA"].ConnectionString;
             int linhasAfetadas = 0;
 
-            using (TransactionScope transacao = new TransactionScope())
-            using (IDbConnection connection = new SqlConnection(connectionString))
+            if (!Eleicao.EleicoesIniciadas)
             {
-                IDbCommand comando = connection.CreateCommand();
-                comando.CommandText =
-                    "UPDATE Cargo set situacao=@paramSituacao where idCargo = @paramIdCargo";
-                comando.AddParameter("paramSituacao", t.Situacao);
-                comando.AddParameter("paramIdCargo", t.IdCargo);
-                connection.Open();
-                linhasAfetadas = comando.ExecuteNonQuery();
+                string connectionString = ConfigurationManager.ConnectionStrings["URNA"].ConnectionString;
 
-                transacao.Complete();
-                connection.Close();
-            }
-            return linhasAfetadas;
-        }
-
-        public int Inserir(Cargo t)
-        {
-            int linhasAfetadas = 0;
-
-            string connectionString = ConfigurationManager.ConnectionStrings["URNA"].ConnectionString;
-
-            if (BuscarPorNome(t.Nome) == null)
-            {
                 using (TransactionScope transacao = new TransactionScope())
                 using (IDbConnection connection = new SqlConnection(connectionString))
                 {
                     IDbCommand comando = connection.CreateCommand();
                     comando.CommandText =
-                        "INSERT into Cargo(nome, situacao) values(@paramNome,@paramSituacao)";
-                    comando.AddParameter("paramNome", t.Nome);
+                        "UPDATE Cargo set situacao=@paramSituacao where idCargo = @paramIdCargo";
                     comando.AddParameter("paramSituacao", t.Situacao);
+                    comando.AddParameter("paramIdCargo", t.IdCargo);
                     connection.Open();
                     linhasAfetadas = comando.ExecuteNonQuery();
 
                     transacao.Complete();
                     connection.Close();
                 }
+                return linhasAfetadas;
             }
-            return linhasAfetadas;
+            else
+            {
+                return linhasAfetadas;
+            }
+        }
+
+        public int Inserir(Cargo t)
+        {
+            int linhasAfetadas = 0;
+
+            if (!Eleicao.EleicoesIniciadas)
+            {
+                string connectionString = ConfigurationManager.ConnectionStrings["URNA"].ConnectionString;
+
+                if (BuscarPorNome(t.Nome) == null)
+                {
+                    using (TransactionScope transacao = new TransactionScope())
+                    using (IDbConnection connection = new SqlConnection(connectionString))
+                    {
+                        IDbCommand comando = connection.CreateCommand();
+                        comando.CommandText =
+                            "INSERT into Cargo(nome, situacao) values(@paramNome,@paramSituacao)";
+                        comando.AddParameter("paramNome", t.Nome);
+                        comando.AddParameter("paramSituacao", t.Situacao);
+                        connection.Open();
+                        linhasAfetadas = comando.ExecuteNonQuery();
+
+                        transacao.Complete();
+                        connection.Close();
+                    }
+                }
+                return linhasAfetadas;
+            }
+            else
+            {
+                return linhasAfetadas;
+            }
         }
 
         public Cargo Parse(IDataReader reader)

@@ -12,33 +12,41 @@ namespace Aula4Ado
     {
         public int Atualizar(Partido t)
         {
-            Partido validar = BuscarPorSiglaENome(t);
-            if (Validar(validar) && validar.IdPartido != t.IdPartido)
-            {
-                return 0;
-            }
-
-            string connectionString = ConfigurationManager.ConnectionStrings["URNA"].ConnectionString;
             int linhasAfetadas = 0;
 
-            using (TransactionScope transacao = new TransactionScope())
-            using (IDbConnection connection = new SqlConnection(connectionString))
+            if (!Eleicao.EleicoesIniciadas)
             {
-                IDbCommand comando = connection.CreateCommand();
-                comando.CommandText =
-                    "UPDATE Partido set nome=@paramNome,slogan=@paramSlogan,sigla=@paramSigla where idPartido = @paramIdPartido";
-                comando.AddParameter("paramNome", t.Nome);
-                comando.AddParameter("paramSlogan", t.Slogan);
-                comando.AddParameter("paramSigla", t.Sigla);
-                comando.AddParameter("paramIdPartido", t.IdPartido);
-                connection.Open();
-                linhasAfetadas = comando.ExecuteNonQuery();
+                Partido validar = BuscarPorSiglaENome(t);
+                if (Validar(validar) && validar.IdPartido != t.IdPartido)
+                {
+                    return 0;
+                }
 
-                transacao.Complete();
-                connection.Close();
+                string connectionString = ConfigurationManager.ConnectionStrings["URNA"].ConnectionString;
+
+                using (TransactionScope transacao = new TransactionScope())
+                using (IDbConnection connection = new SqlConnection(connectionString))
+                {
+                    IDbCommand comando = connection.CreateCommand();
+                    comando.CommandText =
+                        "UPDATE Partido set nome=@paramNome,slogan=@paramSlogan,sigla=@paramSigla where idPartido = @paramIdPartido";
+                    comando.AddParameter("paramNome", t.Nome);
+                    comando.AddParameter("paramSlogan", t.Slogan);
+                    comando.AddParameter("paramSigla", t.Sigla);
+                    comando.AddParameter("paramIdPartido", t.IdPartido);
+                    connection.Open();
+                    linhasAfetadas = comando.ExecuteNonQuery();
+
+                    transacao.Complete();
+                    connection.Close();
+                }
+                return linhasAfetadas;
             }
-            return linhasAfetadas;
-        }
+            else
+            {
+                return linhasAfetadas;
+            }
+         }
 
         public Partido BuscarPorId(int id)
         {
@@ -87,29 +95,9 @@ namespace Aula4Ado
 
         public int DeletarPorId(int id)
         {
-            string connectionString = ConfigurationManager.ConnectionStrings["URNA"].ConnectionString;
             int linhasAfetadas = 0;
 
-            using (TransactionScope transacao = new TransactionScope())
-            using (IDbConnection connection = new SqlConnection(connectionString))
-            {
-                IDbCommand comando = connection.CreateCommand();
-                comando.CommandText =
-                    "DELETE FROM Partido where idPartido = @paramIdPartido";
-                comando.AddParameter("paramIdPartido", id);
-                connection.Open();
-                linhasAfetadas = comando.ExecuteNonQuery();
-
-                transacao.Complete();
-                connection.Close();
-            }
-            return linhasAfetadas;
-        }
-
-        public int Inserir(Partido t)
-        {
-            int linhasAfetadas = 0;
-            if (BuscarPorSiglaENome(t) == null)
+            if (!Eleicao.EleicoesIniciadas)
             {
                 string connectionString = ConfigurationManager.ConnectionStrings["URNA"].ConnectionString;
 
@@ -118,18 +106,54 @@ namespace Aula4Ado
                 {
                     IDbCommand comando = connection.CreateCommand();
                     comando.CommandText =
-                        "INSERT into Partido(nome, slogan, sigla) values(@paramNome,@paramSlogan,@paramSigla)";
-                    comando.AddParameter("paramNome", t.Nome);
-                    comando.AddParameter("paramSlogan", t.Slogan);
-                    comando.AddParameter("paramSigla", t.Sigla);
+                        "DELETE FROM Partido where idPartido = @paramIdPartido";
+                    comando.AddParameter("paramIdPartido", id);
                     connection.Open();
                     linhasAfetadas = comando.ExecuteNonQuery();
 
                     transacao.Complete();
                     connection.Close();
                 }
+                return linhasAfetadas;
             }
-            return linhasAfetadas;
+            else
+            {
+                return linhasAfetadas;
+            }
+        }
+    
+        public int Inserir(Partido t)
+        {
+            int linhasAfetadas = 0;
+
+            if (!Eleicao.EleicoesIniciadas)
+            {
+                if (BuscarPorSiglaENome(t) == null)
+                {
+                    string connectionString = ConfigurationManager.ConnectionStrings["URNA"].ConnectionString;
+
+                    using (TransactionScope transacao = new TransactionScope())
+                    using (IDbConnection connection = new SqlConnection(connectionString))
+                    {
+                        IDbCommand comando = connection.CreateCommand();
+                        comando.CommandText =
+                            "INSERT into Partido(nome, slogan, sigla) values(@paramNome,@paramSlogan,@paramSigla)";
+                        comando.AddParameter("paramNome", t.Nome);
+                        comando.AddParameter("paramSlogan", t.Slogan);
+                        comando.AddParameter("paramSigla", t.Sigla);
+                        connection.Open();
+                        linhasAfetadas = comando.ExecuteNonQuery();
+
+                        transacao.Complete();
+                        connection.Close();
+                    }
+                }
+                return linhasAfetadas;
+            }
+            else
+            {
+                return linhasAfetadas;
+            }
         }
 
         public Partido Parse(IDataReader reader)
