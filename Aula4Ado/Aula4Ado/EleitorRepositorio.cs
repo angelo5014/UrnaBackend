@@ -121,7 +121,7 @@ namespace Aula4Ado
             }
         }
 
-        private Eleitor Parse(IDataReader reader)
+        public Eleitor Parse(IDataReader reader)
         {
             int idDb = Convert.ToInt32(reader["IDEleitor"]);
             string nome = reader["Nome"].ToString();
@@ -187,7 +187,8 @@ namespace Aula4Ado
             {
                 IDbCommand comando = connection.CreateCommand();
                 comando.CommandText =
-                    "SELECT idPartido,nome,slogan,sigla FROM Partido WHERE nome=@paramCPF or sigla=@paramRG";
+                    "SELECT IDEleitor, Nome, TituloEleitoral, RG, CPF, DataNascimento, ZonaEleitoral, Secao, Situacao, Votou " +
+                    "FROM Eleitor WHERE CPF=@paramCPF or RG=@paramRG";
                 comando.AddParameter("paramCPF", cpf);
                 comando.AddParameter("paramRG", rg);
                 connection.Open();
