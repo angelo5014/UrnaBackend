@@ -4,14 +4,14 @@ namespace Aula4Ado
 {
     public class Eleitor
     {
-        int IdEleitor { get; set; }
-        string Nome { get; set; }
-        string TituloEleitoral { get; set; }
-        string RG { get; set; }
-        string CPF { get; set; }
-        DateTime DataNascimento { get; set; }
-        string ZonaEleitoral { get; set; }
-        string Secao { get; set; }
+        public int IdEleitor { get; internal set; }
+        public string Nome { get; private set; }
+        public string TituloEleitoral { get; private set; }
+        internal string RG { get; private set; }
+        internal string CPF { get; private set; }
+        public DateTime DataNascimento { get; private set; }
+        public string ZonaEleitoral { get; private set; }
+        public string Secao { get; private set; }
         public char Situacao { get; internal set; }
         public char Votou { get; internal set; }
 
