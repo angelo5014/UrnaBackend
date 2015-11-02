@@ -46,16 +46,16 @@ namespace Aula4AdoTests
         public void CandidatoPrefeitoNaoEhInseridoPartidosIguais()
         {
             var repo = new CandidatoRepositorio();
-            var candidato = new Candidato("Francisco Everardo Oliveira Silva", "Tiririca", new DateTime(2015-11-2), "666", 2, 666, 1, true);
+            var candidato = new Candidato("Francisco Everardo Oliveira Silva", "Tiririca", new DateTime(2015 - 11 - 2), "666", 2, 666, 1, true);
             int linhasAfetadasInsert = repo.Inserir(candidato);
-            Assert.AreEqual(0, linhasAfetadasInsert);      
+            Assert.AreEqual(0, linhasAfetadasInsert);
         }
 
         [TestMethod]
         public void CandidatoPresidenteEhInseridoEDeletado()
         {
             var repo = new CandidatoRepositorio();
-            var candidato = new Candidato("Francisco Everardo Oliveira Silva", "Tiririca", new DateTime(2015-11-2), "666", 2, 666, 2, true);
+            var candidato = new Candidato("Francisco Everardo Oliveira Silva", "Tiririca", new DateTime(2015 - 11 - 2), "666", 2, 666, 2, true);
             int linhasAfetadasInsert = repo.Inserir(candidato);
             int linhasAfetadasDelete = repo.DeletarPorNomeCompleto(candidato.NomeCompleto);
             Assert.AreEqual(1, linhasAfetadasInsert);
@@ -83,7 +83,7 @@ namespace Aula4AdoTests
         public void CandidatoComNumeroIgualNaoEhInserido()
         {
             var repo = new CandidatoRepositorio();
-            var candidato = new Candidato("Francisco Everardo Oliveira Silva", "Tiririca", new DateTime(2015-11-2), "666", 2, 30300, 2, true);
+            var candidato = new Candidato("Francisco Everardo Oliveira Silva", "Tiririca", new DateTime(2015 - 11 - 2), "666", 2, 30300, 2, true);
             int linhasAfetadasInsert = repo.Inserir(candidato);
             Assert.AreEqual(0, linhasAfetadasInsert);
         }
@@ -95,6 +95,21 @@ namespace Aula4AdoTests
             var candidato = new Candidato("Francisco Everardo Oliveira Silva", "Tiririca", new DateTime(2015 - 11 - 2), "1976", 2, 666, 2, true);
             int linhasAfetadasInsert = repo.Inserir(candidato);
             Assert.AreEqual(0, linhasAfetadasInsert);
+        }
+
+        [TestMethod]
+        public void CandidatoEhAdicionadoAtualizadoEExcluido()
+        {
+            var repo = new CandidatoRepositorio();
+            var candidato = new Candidato("Francisco Everardo Oliveira Silva", "Tiririca", new DateTime(2015 - 11 - 2), "666", 2, 666, 2, true);
+            int linhasAfetadasInsert = repo.Inserir(candidato);
+            var candidato2 = repo.BuscarPorNomeCompleto("Francisco Everardo Oliveira Silva");
+            candidato2.Numero = 777;
+            int linhasAfetadasUpdate = repo.Atualizar(candidato2);
+            int linhasAfetadasDelete = repo.DeletarPorNomeCompleto("Francisco Everardo Oliveira Silva");
+            Assert.AreEqual(1, linhasAfetadasInsert);
+            Assert.AreEqual(1, linhasAfetadasUpdate);
+            Assert.AreEqual(1, linhasAfetadasDelete);
         }
     }
 }
