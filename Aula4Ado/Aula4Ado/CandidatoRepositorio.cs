@@ -13,127 +13,163 @@ namespace Aula4Ado
 {
     public class CandidatoRepositorio : IRepositorio<Candidato>
     {
+        Eleicao Eleicao = new Eleicao();
+
         public int Atualizar(Candidato t)
         {
-            if (!ValidarCandidato(t) || BuscarPorId(t.IdCandidato) == null)
-            {
-                return 0;
-            }
-            string connectionString = ConfigurationManager.ConnectionStrings["URNA"].ConnectionString;
             int linhasAfetadas = 0;
 
-            using (TransactionScope transacao = new TransactionScope())
-            using (IDbConnection connection = new SqlConnection(connectionString))
+            if (!Eleicao.EleicoesIniciadas)
             {
-                IDbCommand comando = connection.CreateCommand();
-                comando.CommandText =
-                    "UPDATE Candidato set idCandidato=@paramId, nomeCompleto=@paramNomeCompleto," 
-                    + " nomePopular=@paramNomePop,dataNascimento=@paramDataNasc, registroTRE=@paramRegistroTRE,"
-                    + " idPartido=@paramIdPartido, foto=@paramFoto, numero=@paramNumero, idCargo=@paramIdCargo," 
-                    + " exibe=@paramExibe where idCandidato = @paramIdCandidato";
-                comando.AddParameter("paramNomeCompleto", t.NomeCompleto);
-                comando.AddParameter("paramNomePop", t.NomePopular);
-                comando.AddParameter("paramDataNasc", t.DataNascimento);
-                comando.AddParameter("paramRegistroTRE", t.RegistroTRE);
-                comando.AddParameter("paramIDPartido",t);
-                comando.AddParameter("paramFoto", t.Foto);
-                comando.AddParameter("paramNumero", t.Numero);
-                comando.AddParameter("paramIdCargo", t.IdCargo);
-                comando.AddParameter("paramExibe", t.Exibe ? 1 : 0);
-                connection.Open();
-                linhasAfetadas = comando.ExecuteNonQuery();
+                if (!ValidarCandidato(t) || BuscarPorId(t.IdCandidato) == null)
+                {
+                    return 0;
+                }
+                string connectionString = ConfigurationManager.ConnectionStrings["URNA"].ConnectionString;
 
-                transacao.Complete();
-                connection.Close();
+                using (TransactionScope transacao = new TransactionScope())
+                using (IDbConnection connection = new SqlConnection(connectionString))
+                {
+                    IDbCommand comando = connection.CreateCommand();
+                    comando.CommandText =
+                        "UPDATE Candidato set idCandidato=@paramId, nomeCompleto=@paramNomeCompleto,"
+                        + " nomePopular=@paramNomePop,dataNascimento=@paramDataNasc, registroTRE=@paramRegistroTRE,"
+                        + " idPartido=@paramIdPartido, foto=@paramFoto, numero=@paramNumero, idCargo=@paramIdCargo,"
+                        + " exibe=@paramExibe where idCandidato = @paramIdCandidato";
+                    comando.AddParameter("paramNomeCompleto", t.NomeCompleto);
+                    comando.AddParameter("paramNomePop", t.NomePopular);
+                    comando.AddParameter("paramDataNasc", t.DataNascimento);
+                    comando.AddParameter("paramRegistroTRE", t.RegistroTRE);
+                    comando.AddParameter("paramIDPartido", t);
+                    comando.AddParameter("paramFoto", t.Foto);
+                    comando.AddParameter("paramNumero", t.Numero);
+                    comando.AddParameter("paramIdCargo", t.IdCargo);
+                    comando.AddParameter("paramExibe", t.Exibe ? 1 : 0);
+                    connection.Open();
+                    linhasAfetadas = comando.ExecuteNonQuery();
+
+                    transacao.Complete();
+                    connection.Close();
+                }
+                return linhasAfetadas;
             }
-            return linhasAfetadas;
+            else
+            {
+                return linhasAfetadas;
+            }
         }
 
         public int Inserir(Candidato t)
         {
             int linhasAfetadas = 0;
-            if (ValidarCandidato(t))
+
+            if (!Eleicao.EleicoesIniciadas)
             {
-                string connectionString = ConfigurationManager.ConnectionStrings["URNA"].ConnectionString;
-                using (TransactionScope transation = new TransactionScope())
-                using (IDbConnection connection = new SqlConnection(connectionString))
+                if (ValidarCandidato(t))
                 {
-                    IDbCommand comando = connection.CreateCommand();
-                    comando.CommandText = "INSERT INTO Candidato (nomeCompleto, nomePopular, dataNascimento, registroTRE, idPartido, foto, numero, idCargo, exibe)"
-                        +"VALUES (@paramNomeCompleto, @paramNomePop, @paramDataNasc, @paramRegistroTRE, @paramIDPartido, @paramFoto, @paramNumero, @paramIdCargo, @paramExibe)";
-                    comando.AddParameter("paramNomeCompleto", t.NomeCompleto);
-                    comando.AddParameter("paramNomePop", t.NomePopular);
-                    comando.AddParameter("paramDataNasc", t.DataNascimento.ToString("yyyy-MM-dd"));
-                    comando.AddParameter("paramRegistroTRE", t.RegistroTRE);
-                    comando.AddParameter("paramIDPartido", t.IdPartido);
-                    comando.AddParameter("paramFoto", t.Foto);
-                    comando.AddParameter("paramNumero", t.Numero);
-                    comando.AddParameter("paramIdCargo", t.IdCargo);
-                    comando.AddParameter("paramExibe", t.Exibe ? 1 : 0);
+                    string connectionString = ConfigurationManager.ConnectionStrings["URNA"].ConnectionString;
+                    using (TransactionScope transation = new TransactionScope())
+                    using (IDbConnection connection = new SqlConnection(connectionString))
+                    {
+                        IDbCommand comando = connection.CreateCommand();
+                        comando.CommandText = "INSERT INTO Candidato (nomeCompleto, nomePopular, dataNascimento, registroTRE, idPartido, foto, numero, idCargo, exibe)"
+                            + "VALUES (@paramNomeCompleto, @paramNomePop, @paramDataNasc, @paramRegistroTRE, @paramIDPartido, @paramFoto, @paramNumero, @paramIdCargo, @paramExibe)";
+                        comando.AddParameter("paramNomeCompleto", t.NomeCompleto);
+                        comando.AddParameter("paramNomePop", t.NomePopular);
+                        comando.AddParameter("paramDataNasc", t.DataNascimento.ToString("yyyy-MM-dd"));
+                        comando.AddParameter("paramRegistroTRE", t.RegistroTRE);
+                        comando.AddParameter("paramIDPartido", t.IdPartido);
+                        comando.AddParameter("paramFoto", t.Foto);
+                        comando.AddParameter("paramNumero", t.Numero);
+                        comando.AddParameter("paramIdCargo", t.IdCargo);
+                        comando.AddParameter("paramExibe", t.Exibe ? 1 : 0);
 
-                    connection.Open();
-                    linhasAfetadas = comando.ExecuteNonQuery();
+                        connection.Open();
+                        linhasAfetadas = comando.ExecuteNonQuery();
 
-                    transation.Complete();
-                    connection.Close();
+                        transation.Complete();
+                        connection.Close();
 
+                    }
                 }
+
+                return linhasAfetadas;
             }
-            return linhasAfetadas;
+            else
+            {
+                return linhasAfetadas;
+            }
+
         }
 
         public int DeletarPorID(int id)
         {
-            if(id == 1 || id == 2 || id == 3 || id == 4)
-            {
-                return 0;
-            }
-
-            string connectionString = ConfigurationManager.ConnectionStrings["URNA"].ConnectionString;
             int linhasAfetadas = 0;
 
-            using (TransactionScope transacao = new TransactionScope())
-            using (IDbConnection connection = new SqlConnection(connectionString))
+            if (!Eleicao.EleicoesIniciadas)
             {
-                IDbCommand comando = connection.CreateCommand();
-                comando.CommandText =
-                    "DELETE FROM Candidato WHERE idCandidato = @paramIdCandidato";
-                comando.AddParameter("paramIdCandidato", id);
+                if (id == 1 || id == 2 || id == 3 || id == 4)
+                {
+                    return 0;
+                }
 
-                connection.Open();
-                linhasAfetadas = comando.ExecuteNonQuery();
+                string connectionString = ConfigurationManager.ConnectionStrings["URNA"].ConnectionString;
 
-                transacao.Complete();
-                connection.Close();
+                using (TransactionScope transacao = new TransactionScope())
+                using (IDbConnection connection = new SqlConnection(connectionString))
+                {
+                    IDbCommand comando = connection.CreateCommand();
+                    comando.CommandText =
+                        "DELETE FROM Candidato WHERE idCandidato = @paramIdCandidato";
+                    comando.AddParameter("paramIdCandidato", id);
+
+                    connection.Open();
+                    linhasAfetadas = comando.ExecuteNonQuery();
+
+                    transacao.Complete();
+                    connection.Close();
+                }
+                return linhasAfetadas;
             }
-            return linhasAfetadas;
+            else
+            {
+                return linhasAfetadas;
+            }
         }
 
         public int DeletarPorNomeCompleto(string nomeCompleto)
         {
-            if (nomeCompleto == "Voto Nulo" || nomeCompleto == "Voto em Branco")
-            {
-                return 0;
-            }
-
-            string connectionString = ConfigurationManager.ConnectionStrings["URNA"].ConnectionString;
             int linhasAfetadas = 0;
 
-            using (TransactionScope transacao = new TransactionScope())
-            using (IDbConnection connection = new SqlConnection(connectionString))
+            if (!Eleicao.EleicoesIniciadas)
             {
-                IDbCommand comando = connection.CreateCommand();
-                comando.CommandText =
-                    "DELETE FROM Candidato WHERE NomeCompleto = @paramNomeCompleto";
-                comando.AddParameter("paramNomeCompleto", nomeCompleto);
+                if (nomeCompleto == "Voto Nulo" || nomeCompleto == "Voto em Branco")
+                {
+                    return 0;
+                }
 
-                connection.Open();
-                linhasAfetadas = comando.ExecuteNonQuery();
+                string connectionString = ConfigurationManager.ConnectionStrings["URNA"].ConnectionString;
+                
+                using (TransactionScope transacao = new TransactionScope())
+                using (IDbConnection connection = new SqlConnection(connectionString))
+                {
+                    IDbCommand comando = connection.CreateCommand();
+                    comando.CommandText =
+                        "DELETE FROM Candidato WHERE NomeCompleto = @paramNomeCompleto";
+                    comando.AddParameter("paramNomeCompleto", nomeCompleto);
 
-                transacao.Complete();
-                connection.Close();
+                    connection.Open();
+                    linhasAfetadas = comando.ExecuteNonQuery();
+
+                    transacao.Complete();
+                    connection.Close();
+                }
+                return linhasAfetadas;
             }
-            return linhasAfetadas;
+            else
+            {
+                return linhasAfetadas;
+            }
         }
 
         public Candidato BuscarPorId(int id)
