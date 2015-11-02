@@ -59,12 +59,11 @@ namespace Aula4Ado
                 using (IDbConnection connection = new SqlConnection(connectionString))
                 {
                     IDbCommand comando = connection.CreateCommand();
-                    comando.CommandText = "INSERT INTO Candidato (idCandidato, nomeCompleto, nomePopular, dataNascimento, registroTRE, idPartido, foto, numero, idCargo, exibe)"
-                        +"VALUES (@paramId, @paramNomeCompleto, @paramNomePop, @paramDataNasc, @paramRegistroTRE, @paramIDPartido, @paramFoto, @paramNumero, @paramIdCargo, @paramExibe)";
-                    comando.AddParameter("paramId", t.IdCandidato);
+                    comando.CommandText = "INSERT INTO Candidato (nomeCompleto, nomePopular, dataNascimento, registroTRE, idPartido, foto, numero, idCargo, exibe)"
+                        +"VALUES (@paramNomeCompleto, @paramNomePop, @paramDataNasc, @paramRegistroTRE, @paramIDPartido, @paramFoto, @paramNumero, @paramIdCargo, @paramExibe)";
                     comando.AddParameter("paramNomeCompleto", t.NomeCompleto);
                     comando.AddParameter("paramNomePop", t.NomePopular);
-                    comando.AddParameter("paramDataNasc", t.DataNascimento);
+                    comando.AddParameter("paramDataNasc", t.DataNascimento.ToString("yyyy-MM-dd"));
                     comando.AddParameter("paramRegistroTRE", t.RegistroTRE);
                     comando.AddParameter("paramIDPartido", t.IdPartido);
                     comando.AddParameter("paramFoto", t.Foto);
@@ -181,6 +180,28 @@ namespace Aula4Ado
             return candidatoEncontrado;
         }
 
+        public Candidato BuscarPorNumero(int numero)
+        {
+            Candidato candidatoEncontrado;
+            string connectionString = ConfigurationManager.ConnectionStrings["URNA"].ConnectionString;
+            using (IDbConnection connection = new SqlConnection(connectionString))
+            {
+                IDbCommand comando = connection.CreateCommand();
+                comando.CommandText = "SELECT idCandidato, nomeCompleto, "
+                    + "nomePopular,dataNascimento, registroTRE, idPartido, foto, "
+                    + "numero, idCargo, exibe "
+                    + "FROM Candidato WHERE Numero = @paramNumero";
+                comando.AddParameter("paramNumero", numero);
+
+                connection.Open();
+                IDataReader reader = comando.ExecuteReader();
+                candidatoEncontrado = reader.Read() ? Parse(reader) : null;
+
+                connection.Close();
+            }
+            return candidatoEncontrado;
+        }
+
         public Candidato BuscarPorNomePopular(string nomePopular)
         {
             Candidato candidatoEncontrado;
@@ -215,27 +236,6 @@ namespace Aula4Ado
                     + "numero, idCargo, exibe "
                     + "FROM Candidato WHERE registroTRE = @paramRegistro";
                 comando.AddParameter("paramRegistro", registro);
-
-                connection.Open();
-                IDataReader reader = comando.ExecuteReader();
-                candidatoEncontrado = reader.Read() ? Parse(reader) : null;
-
-                connection.Close();
-            }
-            return candidatoEncontrado;
-        }
-        public Candidato BuscarPorNumero(int numero)
-        {
-            Candidato candidatoEncontrado;
-            string connectionString = ConfigurationManager.ConnectionStrings["URNA"].ConnectionString;
-            using (IDbConnection connection = new SqlConnection(connectionString))
-            {
-                IDbCommand comando = connection.CreateCommand();
-                comando.CommandText = "SELECT idCandidato, nomeCompleto, "
-                    + "nomePopular,dataNascimento, registroTRE, idPartido, foto, "
-                    + "numero, idCargo, exibe "
-                    + "FROM Candidato WHERE numero = @paramNumero";
-                comando.AddParameter("paramNumero", numero);
 
                 connection.Open();
                 IDataReader reader = comando.ExecuteReader();
