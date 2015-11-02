@@ -101,7 +101,7 @@ namespace Aula4AdoTests
         public void CandidatoEhAdicionadoAtualizadoEExcluido()
         {
             var repo = new CandidatoRepositorio();
-            var candidato = new Candidato("Francisco Everardo Oliveira Silva", "Tiririca", new DateTime(2015 - 11 - 2), "666", 2, 666, 2, true);
+            var candidato = new Candidato("Francisco Everardo Oliveira Silva", "Tiririca", new DateTime(2015, 11, 2), "666", 2, 666, 2, true);
             int linhasAfetadasInsert = repo.Inserir(candidato);
             var candidato2 = repo.BuscarPorNomeCompleto("Francisco Everardo Oliveira Silva");
             candidato2.Numero = 777;
