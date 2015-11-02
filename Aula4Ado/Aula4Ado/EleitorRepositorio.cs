@@ -121,7 +121,7 @@ namespace Aula4Ado
             }
         }
 
-        private Eleitor Parse(IDataReader reader)
+        public Eleitor Parse(IDataReader reader)
         {
             int idDb = Convert.ToInt32(reader["IDEleitor"]);
             string nome = reader["Nome"].ToString();
