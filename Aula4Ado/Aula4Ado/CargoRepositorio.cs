@@ -4,7 +4,6 @@ using System.Data;
 using System.Data.SqlClient;
 using System.Transactions;
 using DbExtensions;
-using System.Collections.Generic;
 
 namespace Aula4Ado
 {
@@ -134,6 +133,11 @@ namespace Aula4Ado
             {
                 Situacao = situacao
             };
+        }
+
+        public bool Validar(Cargo t)
+        {
+            return t != null && t.Nome != null && t.IdCargo > 0 && t.Situacao != '\0';
         }
     }
 }
