@@ -9,14 +9,14 @@ namespace Aula4Ado
     public class Candidato
     {
         public int IdCandidato { get; set; }
-        public string NomeCompleto { get; private set; }
-        public string NomePopular { get; private set; }
-        public DateTime DataNascimento { get; private set; }
-        public String RegistroTRE { get; private set; }
-        public int IdPartido { get; private set; }
-        public string Foto { get; private set; }
-        public int Numero { get; private set; }
-        public int IdCargo { get; private set; }
+        public string NomeCompleto { get; set; }
+        public string NomePopular { get; set; }
+        public DateTime DataNascimento { get; set; }
+        public String RegistroTRE { get; set; }
+        public int IdPartido { get; set; }
+        public string Foto { get;  set; }
+        public int Numero { get; set; }
+        public int IdCargo { get; set; }
         public bool Exibe { get; set; }
         
 
