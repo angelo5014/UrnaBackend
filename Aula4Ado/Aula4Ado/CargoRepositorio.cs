@@ -129,9 +129,9 @@ namespace Aula4Ado
             string nomeCargo = reader["Nome"].ToString();
             char situacao = Convert.ToChar(reader["Situacao"]);
 
-            return new Cargo(idDb, nomeCargo)
+            return new Cargo(nomeCargo, situacao)
             {
-                Situacao = situacao
+                IdCargo = idDb
             };
         }
 

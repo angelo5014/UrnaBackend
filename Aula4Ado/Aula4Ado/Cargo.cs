@@ -4,14 +4,14 @@ namespace Aula4Ado
 {
     public class Cargo
     {
-        public int IdCargo { get; private set; }
+        public int IdCargo { get; set; }
         public string Nome { get; set; }
         public char Situacao { get; set; }
 
-        public Cargo(int idCargo, string nome)
+        public Cargo(string nome, char situacao)
         {
-            IdCargo = idCargo;
             Nome = nome;
+            Situacao = situacao;
         }
 
         public override string ToString()

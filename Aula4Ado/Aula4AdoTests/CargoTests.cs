@@ -9,10 +9,10 @@ namespace Aula4Ado.Tests
         [TestMethod()]
         public void CargoTest()
         {
-            Cargo cargo = new Cargo(23, "Cargo");
+            Cargo cargo = new Cargo("Cargo", 'A');
             Assert.AreEqual("Cargo", cargo.Nome);
-            Assert.AreEqual(23, cargo.IdCargo);
-            Assert.AreEqual('\0', cargo.Situacao);
+            Assert.AreEqual(0, cargo.IdCargo);
+            Assert.AreEqual('A', cargo.Situacao);
         }
 
         [TestMethod()]
@@ -20,9 +20,9 @@ namespace Aula4Ado.Tests
         {
             string esperado = string.Format("{4,-10}{1}{0}{5,-10}{2}{0}{6,-10}{3}",
                 Environment.NewLine, 96, "teste", 'A', "IdCargo:", "Nome:", "Situação:");
-            Cargo atual = new Cargo(96, "teste")
+            Cargo atual = new Cargo("teste", 'A')
             {
-                Situacao = 'A'
+                IdCargo = 96
             };
             Assert.AreEqual(esperado, atual.ToString());
         }
@@ -30,8 +30,8 @@ namespace Aula4Ado.Tests
         [TestMethod()]
         public void EqualsTest()
         {
-            Cargo cargo1 = new Cargo(96, "96");
-            Cargo cargo2 = new Cargo(96, "96");
+            Cargo cargo1 = new Cargo("96", 'I');
+            Cargo cargo2 = new Cargo("96", 'I');
             Assert.AreEqual(cargo1, cargo2);
         }
     }
