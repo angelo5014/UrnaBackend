@@ -8,7 +8,7 @@ namespace Aula4Ado
 {
     public class Eleicao
     {
-        static bool eleicoesIniciadas { get; set; } = false;
+        public static bool EleicoesIniciadas { get; set; } = false;
 
         CandidatoRepositorio candidatoRepositorio = new CandidatoRepositorio();
         VotoRepositorio votoRepositorio = new VotoRepositorio();
@@ -37,12 +37,12 @@ namespace Aula4Ado
 
         public void IniciarEleicoes()
         {
-            eleicoesIniciadas = true;
+            EleicoesIniciadas = true;
         }
 
         public void FinalizarEleicoes()
         {
-            eleicoesIniciadas = false;
+            EleicoesIniciadas = false;
         }
     }
 }
