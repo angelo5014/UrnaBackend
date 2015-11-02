@@ -90,11 +90,12 @@ namespace Aula4Ado
             return eleitorEncontrado;
         }
 
-        public void Inserir(Eleitor t)
+        public int Inserir(Eleitor t)
         {
+            int linhasAfetadas = 0;
             if (BuscarPorRGouCPF(t) == null && Validar(t))
             {
-                string connectionString = ConfigurationManager.ConnectionStrings["URNA"].ConnectionString;
+                string connectionString = ConfigurationManager.ConnectionStrings["URNA"].ConnectionString;                
 
                 using (TransactionScope transacao = new TransactionScope())
                 using (IDbConnection connection = new SqlConnection(connectionString))
@@ -113,12 +114,14 @@ namespace Aula4Ado
                     comando.AddParameter(",@paramSituacao", t.Situacao);
                     comando.AddParameter(",@paramVotou", t.Votou);
                     connection.Open();
-                    comando.ExecuteNonQuery();
+                    linhasAfetadas = comando.ExecuteNonQuery();
 
                     transacao.Complete();
                     connection.Close();
-                }
+                }                
             }
+
+            return linhasAfetadas;
         }
 
         public Eleitor Parse(IDataReader reader)
