@@ -245,27 +245,6 @@ namespace Aula4Ado
             }
             return candidatoEncontrado;
         }
-        public Candidato BuscarPorNumero(int numero)
-        {
-            Candidato candidatoEncontrado;
-            string connectionString = ConfigurationManager.ConnectionStrings["URNA"].ConnectionString;
-            using (IDbConnection connection = new SqlConnection(connectionString))
-            {
-                IDbCommand comando = connection.CreateCommand();
-                comando.CommandText = "SELECT idCandidato, nomeCompleto, "
-                    + "nomePopular,dataNascimento, registroTRE, idPartido, foto, "
-                    + "numero, idCargo, exibe "
-                    + "FROM Candidato WHERE numero = @paramNumero";
-                comando.AddParameter("paramNumero", numero);
-
-                connection.Open();
-                IDataReader reader = comando.ExecuteReader();
-                candidatoEncontrado = reader.Read() ? Parse(reader) : null;
-
-                connection.Close();
-            }
-            return candidatoEncontrado;
-        }
         public Candidato verificarCargoPartido(Candidato candidato)
         {
             Candidato candidatoEncontrado;
