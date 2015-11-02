@@ -11,11 +11,11 @@ using System.Transactions;
 
 namespace Aula4Ado
 {
-    class CandidatoRepositorio : IRepositorio<Candidato>
+    public class CandidatoRepositorio : IRepositorio<Candidato>
     {
         public int Atualizar(Candidato t)
         {
-            if (ValidarCandidato(t) && BuscarPorId(t.IdCandidato) != null)
+            if (!ValidarCandidato(t) || BuscarPorId(t.IdCandidato) == null)
             {
                 return 0;
             }
@@ -49,8 +49,9 @@ namespace Aula4Ado
             return linhasAfetadas;
         }
 
-        public void Inserir(Candidato t)
+        public int Inserir(Candidato t)
         {
+            int linhasAfetadas = 0;
             if (ValidarCandidato(t))
             {
                 string connectionString = ConfigurationManager.ConnectionStrings["URNA"].ConnectionString;
@@ -72,13 +73,14 @@ namespace Aula4Ado
                     comando.AddParameter("paramExibe", t.Exibe ? 1 : 0);
 
                     connection.Open();
-                    comando.ExecuteNonQuery();
+                    linhasAfetadas = comando.ExecuteNonQuery();
 
                     transation.Complete();
                     connection.Close();
 
                 }
             }
+            return linhasAfetadas;
         }
 
         public int DeletarPorID(int id)
@@ -142,7 +144,10 @@ namespace Aula4Ado
             using (IDbConnection connection = new SqlConnection(connectionString))
             {
                 IDbCommand comando = connection.CreateCommand();
-                comando.CommandText = "SELECT idCandidato FROM Candidato WHERE IDCandidato = @paramID";
+                comando.CommandText = "SELECT idCandidato, nomeCompleto, "
+                    + "nomePopular,dataNascimento, registroTRE, idPartido, foto, "
+                    + "numero, idCargo, exibe "
+                    + "FROM Candidato WHERE IDCandidato = @paramID";
                 comando.AddParameter("paramID", id);
 
                 connection.Open();
@@ -161,7 +166,10 @@ namespace Aula4Ado
             using (IDbConnection connection = new SqlConnection(connectionString))
             {
                 IDbCommand comando = connection.CreateCommand();
-                comando.CommandText = "SELECT idCandidato, nomeCompleto FROM Candidato WHERE NomeCompleto = @paramNome";
+                comando.CommandText = "SELECT idCandidato, nomeCompleto, "
+                    + "nomePopular,dataNascimento, registroTRE, idPartido, foto, "
+                    + "numero, idCargo, exibe "
+                    + "FROM Candidato WHERE NomeCompleto = @paramNome";
                 comando.AddParameter("paramNome", nomeCompleto);
 
                 connection.Open();
@@ -180,7 +188,10 @@ namespace Aula4Ado
             using (IDbConnection connection = new SqlConnection(connectionString))
             {
                 IDbCommand comando = connection.CreateCommand();
-                comando.CommandText = "SELECT idCandidato, nomePopular FROM Candidato WHERE NomePopular = @paramNome";
+                comando.CommandText = "SELECT idCandidato, nomeCompleto, "
+                    + "nomePopular,dataNascimento, registroTRE, idPartido, foto, "
+                    + "numero, idCargo, exibe "
+                    + "FROM Candidato WHERE NomePopular = @paramNome";
                 comando.AddParameter("paramNome", nomePopular);
 
                 connection.Open();
@@ -234,17 +245,17 @@ namespace Aula4Ado
             }
             return candidatoEncontrado;
         }
-        public Candidato BuscarPorCargo(Candidato candidato)
+        public Candidato verificarCargoPartido(Candidato candidato)
         {
             Candidato candidatoEncontrado;
             string connectionString = ConfigurationManager.ConnectionStrings["URNA"].ConnectionString;
             using (IDbConnection connection = new SqlConnection(connectionString))
             {
                 IDbCommand comando = connection.CreateCommand();
-                comando.CommandText = "SELECT idCandidato, idPartido, idCargo"
+                comando.CommandText = "SELECT idCandidato, NomeCompleto, NomePopular, DataNascimento, RegistroTRE, c.idPartido, Foto, Numero, c.idCargo, Exibe "
                     + "FROM Candidato c "
                     + "INNER JOIN Cargo ca ON c.IdCargo = ca.IdCargo "
-                    + "INNER JOIN Partido p ON p.IDpartido = c.IdPartido"
+                    + "INNER JOIN Partido p ON p.IDpartido = c.IdPartido "
                     + "WHERE ca.Nome = 'prefeito' and p.idPartido = @paramPartido";
 
                 comando.AddParameter("paramPartido", candidato.IdPartido);
@@ -260,11 +271,11 @@ namespace Aula4Ado
 
         public bool ValidarCandidato(Candidato t)
         {
-            bool nomeCompletoValido = String.IsNullOrWhiteSpace(t.NomeCompleto) ? true : false;
-            bool nomePopularValido = BuscarPorNomePopular(t.NomePopular) != null && String.IsNullOrWhiteSpace(t.NomePopular) ? true : false;
-            bool registroTREValido = BuscarPorRegistroTRE(t.RegistroTRE) != null ? true : false;
-            bool numeroValido = BuscarPorNumero(t.Numero) != null ? true : false;
-            bool cargoValido = BuscarPorCargo(t) != null ? true : false;
+            bool nomeCompletoValido = !String.IsNullOrWhiteSpace(t.NomeCompleto) ? true : false;
+            bool nomePopularValido = BuscarPorNomePopular(t.NomePopular) == null && !String.IsNullOrWhiteSpace(t.NomePopular) ? true : false;
+            bool registroTREValido = BuscarPorRegistroTRE(t.RegistroTRE) == null ? true : false;
+            bool numeroValido = BuscarPorNumero(t.Numero) == null ? true : false;
+            bool cargoValido = t.IdCargo == 1 ? (verificarCargoPartido(t) == null ? true : false) : true;
             return nomeCompletoValido && nomePopularValido && registroTREValido && numeroValido && cargoValido ? true : false;
         }
 
@@ -275,7 +286,7 @@ namespace Aula4Ado
             int idCandidato = Convert.ToInt32(reader["IdCandidato"]);
             string nomeCompleto = reader["NomeCompleto"].ToString();
             string nomePopular = reader["NomePopular"].ToString();
-            DateTime dataNascimento = Convert.ToDateTime(reader["DataNacimento"]);
+            DateTime dataNascimento = Convert.ToDateTime(reader["DataNascimento"]);
             string registroTRE = reader["RegistroTRE"].ToString();
             int idPartido = Convert.ToInt32(reader["idPartido"]);
             string foto = reader["Foto"].ToString();
@@ -283,7 +294,7 @@ namespace Aula4Ado
             int idCargo = Convert.ToInt32(reader["IDCargo"]);
             bool exibe = Convert.ToBoolean(Convert.ToInt32(reader["Exibe"]));
 
-            return new Candidato(idCandidato, nomeCompleto, nomePopular, dataNascimento, registroTRE, idPartido, foto, numero, idCargo, exibe);
+            return new Candidato(nomeCompleto, nomePopular, dataNascimento, registroTRE, idPartido, foto, numero, idCargo, exibe) { IdCandidato = idCandidato };
         }
 
     }

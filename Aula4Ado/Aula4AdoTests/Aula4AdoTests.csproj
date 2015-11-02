@@ -46,17 +46,23 @@
     </When>
     <Otherwise>
       <ItemGroup>
-        <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework" />
+        <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework">
+          <Private>False</Private>
+        </Reference>
       </ItemGroup>
     </Otherwise>
   </Choose>
   <ItemGroup>
+    <Compile Include="CandidatoRepositorioTest.cs" />
     <Compile Include="CargoTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
     <ProjectReference Include="..\Aula4Ado\Aula4Ado.csproj">
-      <Project>{20286F01-49CD-41F3-9BF7-71710F8E2369}</Project>
+      <Project>{20286f01-49cd-41f3-9bf7-71710f8e2369}</Project>
       <Name>Aula4Ado</Name>
     </ProjectReference>
   </ItemGroup>

@@ -106,8 +106,9 @@ namespace Aula4Ado
             return linhasAfetadas;
         }
 
-        public void Inserir(Partido t)
+        public int Inserir(Partido t)
         {
+            int linhasAfetadas = 0;
             if (BuscarPorSiglaENome(t) == null)
             {
                 string connectionString = ConfigurationManager.ConnectionStrings["URNA"].ConnectionString;
@@ -122,12 +123,13 @@ namespace Aula4Ado
                     comando.AddParameter("paramSlogan", t.Slogan);
                     comando.AddParameter("paramSigla", t.Sigla);
                     connection.Open();
-                    comando.ExecuteNonQuery();
+                    linhasAfetadas = comando.ExecuteNonQuery();
 
                     transacao.Complete();
                     connection.Close();
                 }
             }
+            return linhasAfetadas;
         }
 
         public Partido Parse(IDataReader reader)
