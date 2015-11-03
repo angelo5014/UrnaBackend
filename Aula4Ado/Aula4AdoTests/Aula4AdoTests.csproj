@@ -54,8 +54,19 @@
   </Choose>
   <ItemGroup>
     <Compile Include="CandidatoRepositorioTest.cs" />
+    <Compile Include="CandidatoTests.cs" />
+    <Compile Include="CargoRepositorioTests.cs" />
     <Compile Include="CargoTests.cs" />
+    <Compile Include="EleicaoTests.cs" />
+    <Compile Include="EleitorRepositorioTests.cs" />
+    <Compile Include="EleitorTests.cs" />
+    <Compile Include="EstatisticaRepositorioTests.cs" />
+    <Compile Include="EstatisticaTests.cs" />
+    <Compile Include="PartidoRepositorioTests.cs" />
+    <Compile Include="PartidoTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="VotoRepositorioTests.cs" />
+    <Compile Include="VotoTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

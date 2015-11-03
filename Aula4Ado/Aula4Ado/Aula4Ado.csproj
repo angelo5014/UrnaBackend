@@ -50,7 +50,6 @@
     <Compile Include="Cargo.cs" />
     <Compile Include="CargoRepositorio.cs" />
     <Compile Include="Eleicao.cs" />
-    <Compile Include="EleicaoRepositorio.cs" />
     <Compile Include="Eleitor.cs" />
     <Compile Include="EleitorRepositorio.cs" />
     <Compile Include="Estatistica.cs" />
