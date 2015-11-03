@@ -32,5 +32,16 @@ namespace Aula4Ado
             return Nome == estatistica.Nome && Cargo == estatistica.Cargo
                 && Partido == estatistica.Partido && Votos == estatistica.Votos;
         }
+
+        public static string PorcentagemEquivalente(IList<Estatistica> estatisticas)
+        {
+            string retorno = "";
+            int total = estatisticas.Sum(estatistica => estatistica.Votos);
+            foreach (Estatistica estatistica in estatisticas)
+            {
+                retorno += Environment.NewLine + String.Format("{0}: {1:0.00}%", estatistica.Nome, ((double)estatistica.Votos * 100 / (double)total));
+            }
+            return retorno + Environment.NewLine;
+        }
     }
 }
