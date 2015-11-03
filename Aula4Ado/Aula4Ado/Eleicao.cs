@@ -1,32 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Aula4Ado
+﻿namespace Aula4Ado
 {
     public class Eleicao
     {
-        public static bool EleicoesIniciadas { get; set; } = false;
+        public static bool EleicoesIniciadas { get; private set; } = false;
 
-        CandidatoRepositorio candidatoRepositorio = new CandidatoRepositorio();
         VotoRepositorio votoRepositorio = new VotoRepositorio();
-        CargoRepositorio cargoRepositorio = new CargoRepositorio();
-        PartidoRepositorio partidoRepositorio = new PartidoRepositorio();
-        EleicaoRepositorio eleicaoRepositorio = new EleicaoRepositorio();
         EleitorRepositorio eleitorRepositorio = new EleitorRepositorio();
-        EstatisticaRepositorio estatisticaRepositorio = new EstatisticaRepositorio();
-
-        public Eleicao()
-        {
-        }
 
         public bool Votar(string cpf, int numeroCandidato)
         {
             Voto voto = new Voto(numeroCandidato);
             Eleitor eleitor = eleitorRepositorio.BuscarPorCpf(cpf);
-            if (eleitor != null && eleitor.Votou == 'N' && eleitor.Situacao == 'A')
+            if (EleicoesIniciadas && eleitor != null && eleitor.Votou == 'N' && eleitor.Situacao == 'A')
             {
                 votoRepositorio.Inserir(voto);
                 eleitor.Votou = 'S';
