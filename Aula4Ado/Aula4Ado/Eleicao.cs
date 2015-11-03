@@ -23,6 +23,8 @@
 
         public void IniciarEleicoes()
         {
+            votoRepositorio.DeletarVotos();
+            eleitorRepositorio.ResetarSituacao();
             EleicoesIniciadas = true;
         }
 

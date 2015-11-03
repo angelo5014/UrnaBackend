@@ -224,5 +224,25 @@ namespace Aula4Ado
 
             return eleitorEncontrado;
         }
+
+        public int ResetarSituacao()
+        {
+            string connectionString = ConfigurationManager.ConnectionStrings["URNA"].ConnectionString;
+            int linhasAfetadas = 0;
+
+            using (TransactionScope transacao = new TransactionScope())
+            using (IDbConnection connection = new SqlConnection(connectionString))
+            {
+                IDbCommand comando = connection.CreateCommand();
+                comando.CommandText =
+                    "UPDATE Eleitor set votou='N'";
+                connection.Open();
+                linhasAfetadas = comando.ExecuteNonQuery();
+
+                transacao.Complete();
+                connection.Close();
+            }
+            return linhasAfetadas;
+        }
     }
 }

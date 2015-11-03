@@ -48,8 +48,7 @@ namespace Aula4Ado
                 {
                     IDbCommand comando = connection.CreateCommand();
                     comando.CommandText =
-                        "INSERT into Voto(idVoto, idCandidato) values(@paramIdVoto,@paramIdCandidato)";
-                    comando.AddParameter("paramIdVoto", voto.IdVoto);
+                        "INSERT into Voto(idCandidato) values(@paramIdCandidato)";
                     comando.AddParameter("paramIdCandidato", idCandidato);
                     connection.Open();
                     comando.ExecuteNonQuery();
@@ -75,7 +74,27 @@ namespace Aula4Ado
 
         public bool Validar(Voto t)
         {
-            return t != null && t.Numero > 0 && t.IdVoto > 0;
+            return t != null;
+        }
+
+        public int DeletarVotos()
+        {
+            int linhasAfetadas = 0;
+            string connectionString = ConfigurationManager.ConnectionStrings["URNA"].ConnectionString;
+
+            using (TransactionScope transacao = new TransactionScope())
+            using (IDbConnection connection = new SqlConnection(connectionString))
+            {
+                IDbCommand comando = connection.CreateCommand();
+                comando.CommandText =
+                    "DELETE FROM Voto";
+                connection.Open();
+                linhasAfetadas = comando.ExecuteNonQuery();
+
+                transacao.Complete();
+                connection.Close();
+            }
+            return linhasAfetadas;
         }
     }
 }
