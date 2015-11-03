@@ -15,7 +15,8 @@ namespace Aula4Ado
 
             if (!Eleicao.EleicoesIniciadas)
             {
-                if (BuscarPorNome(t.Nome) != null)
+                Cargo cargo = BuscarPorNome(t.Nome);
+                if ((BuscarPorNome(t.Nome) != null && t.IdCargo != cargo.IdCargo) || !Validar(t))
                 {
                     return 0;
                 }
