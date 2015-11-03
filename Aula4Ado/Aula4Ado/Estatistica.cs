@@ -6,12 +6,12 @@ using System.Threading.Tasks;
 
 namespace Aula4Ado
 {
-    class Estatistica
+    public class Estatistica
     {
-        string Nome { get; set; }
-        string Cargo { get; set; }
-        string Partido { get; set; }
-        int Votos { get; set; }
+        public string Nome { get; private set; }
+        public string Cargo { get; private set; }
+        public string Partido { get; private set; }
+        public int Votos { get; private set; }
 
         public Estatistica(string nome, string cargo, string partido, int votos)
         {
@@ -19,6 +19,18 @@ namespace Aula4Ado
             Cargo = cargo;
             Partido = partido;
             Votos = votos;
+        }
+
+        public override string ToString()
+        {
+            return String.Format("{1,-9}{2}{0}{3,-9}{4}{0}{5,-9}{6}{0}{7,-9}{8}", Environment.NewLine, "Nome:", Nome, "Cargo:", Cargo, "Partido:", Partido, "Votos:", Votos);
+        }
+
+        public override bool Equals(object obj)
+        {
+            Estatistica estatistica = (Estatistica)obj;
+            return Nome == estatistica.Nome && Cargo == estatistica.Cargo
+                && Partido == estatistica.Partido && Votos == estatistica.Votos;
         }
     }
 }

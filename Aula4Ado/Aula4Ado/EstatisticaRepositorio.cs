@@ -6,7 +6,7 @@ using System.Data.SqlClient;
 
 namespace Aula4Ado
 {
-    class EstatisticaRepositorio
+    public class EstatisticaRepositorio
     {
         public IList<Estatistica> BuscarEstatisticas()
         {
