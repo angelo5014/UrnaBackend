@@ -7,7 +7,7 @@ using System.Transactions;
 
 namespace Aula4Ado
 {
-    class VotoRepositorio : IRepositorio<Voto>
+    public class VotoRepositorio : IRepositorio<Voto>
     {
         public int Atualizar(Voto t)
         {
@@ -39,6 +39,8 @@ namespace Aula4Ado
         {
             if (Validar(voto))
             {
+                int idCandidato = new CandidatoRepositorio().BuscarPorNumero(voto.Numero).IdCandidato;
+
                 string connectionString = ConfigurationManager.ConnectionStrings["URNA"].ConnectionString;
 
                 using (TransactionScope transacao = new TransactionScope())
@@ -48,7 +50,7 @@ namespace Aula4Ado
                     comando.CommandText =
                         "INSERT into Voto(idVoto, idCandidato) values(@paramIdVoto,@paramIdCandidato)";
                     comando.AddParameter("paramIdVoto", voto.IdVoto);
-                    comando.AddParameter("paramIdCandidato", voto.IdCandidato);
+                    comando.AddParameter("paramIdCandidato", idCandidato);
                     connection.Open();
                     comando.ExecuteNonQuery();
 
@@ -65,7 +67,7 @@ namespace Aula4Ado
             int idDb = Convert.ToInt32(reader["IdVoto"]);
             int idCandidato = Convert.ToInt32(reader["IdCandidato"]);
 
-            return new Voto(idCandidato)
+            return new Voto(new CandidatoRepositorio().BuscarPorId(idCandidato).Numero)
             {
                 IdVoto = idDb
             };
@@ -73,7 +75,7 @@ namespace Aula4Ado
 
         public bool Validar(Voto t)
         {
-            return t != null && t.IdCandidato > 0 && t.IdVoto > 0;
+            return t != null && t.Numero > 0 && t.IdVoto > 0;
         }
     }
 }
