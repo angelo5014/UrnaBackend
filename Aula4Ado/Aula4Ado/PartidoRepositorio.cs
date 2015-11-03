@@ -8,7 +8,7 @@ using System.Transactions;
 
 namespace Aula4Ado
 {
-    class PartidoRepositorio : IRepositorio<Partido>
+    public class PartidoRepositorio : IRepositorio<Partido>
     {
         public int Atualizar(Partido t)
         {
@@ -17,7 +17,7 @@ namespace Aula4Ado
             if (!Eleicao.EleicoesIniciadas)
             {
                 Partido validar = BuscarPorSiglaENome(t);
-                if (Validar(validar) && validar.IdPartido != t.IdPartido)
+                if ((Validar(validar) && validar.IdPartido != t.IdPartido) || !Validar(t))
                 {
                     return 0;
                 }
@@ -46,7 +46,7 @@ namespace Aula4Ado
             {
                 return linhasAfetadas;
             }
-         }
+        }
 
         public Partido BuscarPorId(int id)
         {
@@ -121,7 +121,7 @@ namespace Aula4Ado
                 return linhasAfetadas;
             }
         }
-    
+
         public int Inserir(Partido t)
         {
             int linhasAfetadas = 0;
